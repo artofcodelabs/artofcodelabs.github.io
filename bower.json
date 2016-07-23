@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "aoc_co",
+  "authors": [
+    "himn1 <zbigniew.humeniuk@gmail.com>"
+  ],
+  "description": "Art of Code homepage",
+  "main": "",
+  "license": "MIT",
+  "homepage": "http://artofcode.co",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.4",
+    "normalize-css": "normalize.css#^4.1.1"
+  }
+}

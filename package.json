@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "aoc_co",
+  "version": "1.0.0",
+  "description": "Art of Code homepage",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zbigniew.humeniuk@gmail.com",
+  "license": "MIT"
+}

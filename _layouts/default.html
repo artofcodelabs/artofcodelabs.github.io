@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
-
   {% include head.html %}
-
   <body>
-
-    {% include header.html %}
+    <header class="site-header">
+      <div class="wrapper">
+        {% include header.html %}
+      </div>
+    </header>
 
     <div class="page-content">
       <div class="wrapper">
@@ -13,8 +14,12 @@
       </div>
     </div>
 
-    {% include footer.html %}
-
+    <footer class="site-footer">
+      <div class="wrapper">
+        <div>
+          {% include footer.html %}
+        </div>
+      </div>
+    </footer>
   </body>
-
 </html>

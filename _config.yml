@@ -7,7 +7,7 @@
 
 # Site settings
 title: Art of Code
-email: zbigniew.humeniuk@gmail.com
+email: hello@artofcode.co
 description: > # this means to ignore newlines until "baseurl:"
   Art of Code homepage
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -17,3 +17,6 @@ github_username:  himn1
 
 # Build settings
 markdown: kramdown
+
+exclude:
+  - node_modules
