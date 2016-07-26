@@ -5,7 +5,14 @@
   "description": "Art of Code homepage",
   "main": "index.js",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "del": "^2.2.1",
+    "gulp": "^3.9.1",
+    "gulp-coffee": "^2.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-watch": "^4.3.9"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
