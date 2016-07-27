@@ -1,6 +1,8 @@
 _site
 _bower_components
 node_modules
+_javascripts
 javascripts
 .sass-cache
 .jekyll-metadata
+.DS_Store

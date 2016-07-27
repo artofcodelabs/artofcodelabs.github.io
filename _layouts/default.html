@@ -2,24 +2,48 @@
 <html>
   {% include head.html %}
   <body data-controller="Main" data-action="index">
-    <header class="site-header">
-      <div class="wrapper">
-        {% include header.html %}
+    <div id='first_page' class='page'>
+      <div class="row align-middle">
+        <div class="columns">
+          <h1>∆OC</h1>
+        </div>
       </div>
-    </header>
-
-    <div class="page-content">
-      <div class="wrapper">
-        {{ content }}
+      <div class="row align-bottom">
+        <div class="columns">
+          <p class='align-center'>
+            <span aria-hidden="true" class="arrow_carrot-down"></span>
+          </p>
+        </div>
       </div>
     </div>
 
-    <footer class="site-footer">
-      <div class="wrapper">
-        <div>
-          {% include footer.html %}
+    {{ content }}
+
+    <div id='third_page' class='page'>
+      <div class="row align-middle">
+        <div class="columns">
+          <h2>Info</h2>
+          <div>
+            <ul class="contact-list">
+              <li>Zbigniew Humeniuk <b>Art of Code</b></li>
+              <li>NIP: 6391799512</li>
+              <li>ul. Huculska 4/52</li>
+              <li>30-413 Kraków</li>
+              <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+            </ul>
+          </div>
+          <div>
+            <ul class="social-media-list">
+              <li>
+                {% include icon-github.html username=site.github_username %}
+              </li>
+              <li>
+                {% include icon-twitter.html username=site.twitter_username %}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </footer>
+    </div>
   </body>
 </html>
