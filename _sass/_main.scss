@@ -2,6 +2,10 @@ body{
   background-color: #111;
 }
 
+/**
+ * First page
+ */
+
 #first_page{
   background-color: #fff;
 
@@ -16,16 +20,34 @@ body{
   }
 }
 
+/**
+ * Second page
+ */
+
 #second_page{
   background-color: $blue-jeans;
 }
 
+/**
+ * Last page
+ */
+
 #last_page{
   padding: rem-calc(16) 0;
-  background-color: #111;
+  background-color: $midnight-blue;
   color: #fff;
 
   .info_column{
     margin: rem-calc(10) 0;
   }
+}
+
+/**
+ * Footer
+ */
+
+#footer{
+  padding: rem-calc(16) 0;
+  background-color: #111;
+  color: #fff;
 }

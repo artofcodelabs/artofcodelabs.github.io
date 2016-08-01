@@ -94,17 +94,15 @@ h2{ font-size: rem-calc(26); }
  * Links
  */
 a {
-    color: $brand-color;
-    text-decoration: none;
+  color: $jay;
+  text-decoration: none;
 
-    &:visited {
-        color: darken($brand-color, 15%);
-    }
+  &:visited {}
 
-    &:hover {
-        color: $text-color;
-        text-decoration: underline;
-    }
+  &:hover {
+    color: $jay-dark;
+    text-decoration: underline;
+  }
 }
 
 
@@ -195,17 +193,16 @@ pre {
  * Icons
  */
 .icon {
+  > svg {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
 
-    > svg {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        vertical-align: middle;
-
-        path {
-            fill: $grey-color;
-        }
+    path {
+      fill: $concrete;
     }
+  }
 }
 
 /**
@@ -220,3 +217,4 @@ pre {
 .no-margin-bottom{ margin-bottom: 0; }
 
 .align-center, .align_center { text-align: center; }
+.align-right{ text-align: right; }

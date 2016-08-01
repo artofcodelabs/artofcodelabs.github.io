@@ -16,3 +16,6 @@ class App.Controllers.Main extends App.Controllers.Base
 
     lastPageView = new App.Views.LastPage
     lastPageView.render()
+
+    footerView = new App.Views.Footer
+    footerView.render()

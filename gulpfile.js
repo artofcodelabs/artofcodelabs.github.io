@@ -49,11 +49,11 @@ gulp.task('coffee', ['clean'], function() {
 gulp.task('scripts', ['coffee'], function() {
   var manifest = [
     './_bower_components/jquery/dist/jquery.js',
-    './_bower_components/foundation-sites/js/foundation.core.js',
-    './_bower_components/foundation-sites/js/foundation.util.mediaQuery.js',
-    './_bower_components/foundation-sites/js/foundation.util.box.js',
-    './_bower_components/foundation-sites/js/foundation.util.triggers.js',
-    './_bower_components/foundation-sites/js/foundation.interchange.js',
+    './_bower_components/foundation-sites/dist/plugins/foundation.core.js',
+    './_bower_components/foundation-sites/dist/plugins/foundation.util.mediaQuery.js',
+    './_bower_components/foundation-sites/dist/plugins/foundation.util.box.js',
+    './_bower_components/foundation-sites/dist/plugins/foundation.util.triggers.js',
+    './_bower_components/foundation-sites/dist/plugins/foundation.interchange.js',
     './_bower_components/loco-js/dist/loco.js',
     './_javascripts/initializers/**/*.js',
     './_javascripts/views/**/*.js',
