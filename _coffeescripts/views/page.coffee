@@ -1,7 +1,7 @@
 class App.Views.Page extends App.Models.Base
   constructor: (opts = {}) ->
     super opts
+    @windowHeight = $(window).height()
 
   render: ->
-    windowHeight = $(window).height()
-    $('div.page').css 'height', windowHeight
+    $('div.page').css 'min-height', @windowHeight

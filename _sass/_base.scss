@@ -82,8 +82,11 @@ li {
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: $base-font-weight;
+  font-weight: $base-font-weight;
+  font-family: $serif-font-family;
 }
+
+h2{ font-size: rem-calc(26); }
 
 
 
@@ -208,5 +211,12 @@ pre {
 /**
  * Classes
  */
+
+.no-horizontal-padding{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.no-margin-bottom{ margin-bottom: 0; }
 
 .align-center, .align_center { text-align: center; }

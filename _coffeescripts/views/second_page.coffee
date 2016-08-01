@@ -4,4 +4,4 @@ class App.Views.SecondPage extends App.Models.Base
     @windowHeight = $(window).height()
 
   render: ->
-    $('#second_page > .row:first').css 'height', @windowHeight
+    $('#second_page > .row:first').css 'min-height', @windowHeight

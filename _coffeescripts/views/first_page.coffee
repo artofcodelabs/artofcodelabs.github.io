@@ -4,5 +4,5 @@ class App.Views.FirstPage extends App.Models.Base
     @windowHeight = $(window).height()
 
   render: ->
-    $('#first_page > .row:first').css 'height', @windowHeight * 0.9
-    $('#first_page > .row:last').css 'height', @windowHeight * 0.1
+    $('#first_page > .row:first').css 'min-height', @windowHeight * 0.9
+    $('#first_page > .row:last').css 'min-height', @windowHeight * 0.1

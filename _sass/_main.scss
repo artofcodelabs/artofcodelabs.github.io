@@ -1,16 +1,31 @@
+body{
+  background-color: #111;
+}
+
 #first_page{
   background-color: #fff;
 
-  h1{
-    font-size: rem-calc(100);
-    text-align: center;
+  #logo_row{
+    #logo{
+      @media screen and #{breakpoint(small down)} {}
+    }
+  }
+
+  #scroll_down_row{
+    font-size: rem-calc(30);
   }
 }
 
 #second_page{
-  background-color: #eee;
+  background-color: $blue-jeans;
 }
 
-#third_page{
-  background-color: #ddd;
+#last_page{
+  padding: rem-calc(16) 0;
+  background-color: #111;
+  color: #fff;
+
+  .info_column{
+    margin: rem-calc(10) 0;
+  }
 }

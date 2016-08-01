@@ -1,13 +1,66 @@
 ---
 layout: default
 ---
+<div id='first_page' class='page'>
+  <div class="row align-middle" id='logo_row'>
+    <div class="columns">
+      <p class='align-center'>
+        <img data-interchange="[images/logo@025x.png, small], [images/logo@05x.png, medium], [images/logo@05x.png, large], [images/logo@1x.png, retina], [images/logo@1x.png, xlarge], [images/logo@2x.png, xxlarge]" alt='logo' id='logo'>
+      </p>
+    </div>
+  </div>
+  <div class="row align-bottom" id='scroll_down_row'>
+    <div class="columns">
+      <p class='align-center animated infinite tada'>
+        <span aria-hidden="true" class="arrow_carrot-down"></span>
+      </p>
+    </div>
+  </div>
+</div>
 
 <div id='second_page' class='page'>
+  <div class="row">
+    <div class="columns">
+      <h2>About</h2>
+    </div>
+  </div>
+</div>
+
+<div id='last_page' class='page'>
   <div class="row align-middle">
-    <div class="small-12 columns">
-      <h2 class="page-heading">Silence is the best music...</h2>
-      <h2 class="page-heading">The best interface is no interface...</h2>
-      <h2 class="page-heading">The best design is no design...</h2>
+    <div class="columns no-horizontal-padding">
+      <div class="row align-spaced">
+        <div class="columns large-3 medium-5 small-10 info_column">
+          <p class='no-margin-bottom'>
+            Zbigniew Humeniuk<br>
+            <b>Art of Code</b><br>
+            NIP: 6391799512
+          </p>
+        </div>
+
+        <div class="columns large-3 medium-5 small-10 info_column">
+          <p class='no-margin-bottom'>
+            Huculska 4/52<br>
+            30-413 Kraków<br>
+            Poland
+          </p>
+        </div>
+
+        <div class="columns large-3 medium-5 small-10 info_column">
+          <p class='no-margin-bottom'>
+            Contact<br>
+            <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+          </p>
+        </div>
+
+        <div class="columns large-3 medium-5 small-10 info_column">
+          <p class='no-margin-bottom'>
+            {% include icon-twitter.html username=site.twitter_username %}<br>
+            {% include icon-github.html username=site.github_username %}<br>
+            {% include icon-github.html username='locoframework' %}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
