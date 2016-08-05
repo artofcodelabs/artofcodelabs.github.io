@@ -21,13 +21,14 @@ body {
   -o-font-feature-settings: "kern" 1;
   font-feature-settings: "kern" 1;
   font-kerning: normal;
+
+  -webkit-font-smoothing: antialiased;
 }
-
-
 
 /**
  * Set `margin-bottom` to maintain vertical rhythm
  */
+
 h1, h2, h3, h4, h5, h6,
 p, blockquote, pre,
 ul, ol, dl, figure,
@@ -35,30 +36,26 @@ ul, ol, dl, figure,
     margin-bottom: rem-calc($base-font-size * 1.618);
 }
 
-
-
 /**
  * Images
  */
+
 img {
-    max-width: 100%;
-    vertical-align: middle;
+  max-width: 100%;
+  vertical-align: middle;
 }
-
-
 
 /**
  * Figures
  */
+
 figure > img {
-    display: block;
+  display: block;
 }
 
 figcaption {
-    font-size: $small-font-size;
+  font-size: $small-font-size;
 }
-
-
 
 /**
  * Lists
@@ -106,11 +103,10 @@ a {
   }
 }
 
-
-
 /**
  * Blockquotes
  */
+
 blockquote {
     border-left: 4px solid #ccc;
     font-size: 18px;
@@ -122,11 +118,10 @@ blockquote {
     }
 }
 
-
-
 /**
  * Code formatting
  */
+
 pre,
 code {
     font-size: 15px;
@@ -150,7 +145,6 @@ pre {
     }
 }
 
-
 /**
  * Icons
  */
@@ -161,11 +155,23 @@ pre {
     width: 16px;
     height: 16px;
     vertical-align: middle;
+    margin-bottom: 2px;
 
     path {
       fill: $concrete;
     }
   }
+}
+
+/**
+ * Other
+ */
+
+hr{
+  height: 0;
+  border: none;
+  border-bottom: 1px dotted $concrete;
+  margin-bottom: rem-calc(38);
 }
 
 /**
@@ -181,3 +187,5 @@ pre {
 
 .align-center, .align_center { text-align: center; }
 .align-right{ text-align: right; }
+.align-left{ text-align: left; }
+.img-circle{ border-radius: 50%; }

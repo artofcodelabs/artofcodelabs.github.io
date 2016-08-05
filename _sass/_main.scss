@@ -31,15 +31,18 @@ body{
   @include angled-edge('inside bottom','upper left', $emerald);
   background-color: $sun-flower;
 
-  #h1_img{
-    float: left;
-    clear: right;
-    margin-right: rem-calc(28);
-    margin-bottom: rem-calc(28);
+  #second_page_row_middle{
+    padding-top: 100px;
+    padding-bottom: 61px;
   }
 
   p{
     margin-bottom: rem-calc(28);
+  }
+
+  img.team{
+    width: 224px;
+    height: 224px;
   }
 }
 
