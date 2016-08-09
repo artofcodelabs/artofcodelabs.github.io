@@ -4,7 +4,12 @@
   "version": "1.0.0",
   "description": "Art of Code homepage",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "baffle": "^0.3.5",
+    "foundation-sites": "^6.2.3",
+    "jquery": "^2.2.4",
+    "loco-js": "^1.0.0"
+  },
   "devDependencies": {
     "del": "^2.2.1",
     "gulp": "^3.9.1",

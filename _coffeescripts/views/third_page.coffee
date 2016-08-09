@@ -5,3 +5,5 @@ class App.Views.ThirdPage extends App.Models.Base
 
   render: ->
     $('#third_page > .row:first').css 'min-height', @windowHeight
+    b = baffle '#secret_project_name', characters: '█▓▒░█▓▒░█▓▒░<>/', speed: 161
+    b.start()

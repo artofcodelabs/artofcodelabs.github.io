@@ -33,7 +33,7 @@ h1, h2, h3, h4, h5, h6,
 p, blockquote, pre,
 ul, ol, dl, figure,
 %vertical-rhythm {
-    margin-bottom: rem-calc($base-font-size * 1.618);
+  margin-bottom: rem-calc($base-font-size * 1.618);
 }
 
 /**
@@ -99,6 +99,14 @@ a {
 
     &:hover {
       color: $midnight-blue;
+    }
+
+    .icon {
+      > svg {
+        path {
+          fill: $concrete;
+        }
+      }
     }
   }
 }
@@ -188,4 +196,4 @@ hr{
 .align-center, .align_center { text-align: center; }
 .align-right{ text-align: right; }
 .align-left{ text-align: left; }
-.img-circle{ border-radius: 50%; }
+.circle{ border-radius: 50%; }

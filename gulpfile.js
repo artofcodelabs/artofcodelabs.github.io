@@ -48,13 +48,14 @@ gulp.task('coffee', ['clean'], function() {
 // Scripts
 gulp.task('scripts', ['coffee'], function() {
   var manifest = [
-    './_bower_components/jquery/dist/jquery.js',
-    './_bower_components/foundation-sites/dist/plugins/foundation.core.js',
-    './_bower_components/foundation-sites/dist/plugins/foundation.util.mediaQuery.js',
-    './_bower_components/foundation-sites/dist/plugins/foundation.util.box.js',
-    './_bower_components/foundation-sites/dist/plugins/foundation.util.triggers.js',
-    './_bower_components/foundation-sites/dist/plugins/foundation.interchange.js',
-    './_bower_components/loco-js/dist/loco.js',
+    './node_modules/jquery/dist/jquery.js',
+    './node_modules/foundation-sites/dist/plugins/foundation.core.js',
+    './node_modules/foundation-sites/dist/plugins/foundation.util.mediaQuery.js',
+    './node_modules/foundation-sites/dist/plugins/foundation.util.box.js',
+    './node_modules/foundation-sites/dist/plugins/foundation.util.triggers.js',
+    './node_modules/foundation-sites/dist/plugins/foundation.interchange.js',
+    './node_modules/loco-js/dist/loco.js',
+    './node_modules/baffle/dist/baffle.min.js',
     './_javascripts/initializers/**/*.js',
     './_javascripts/views/**/*.js',
     './_javascripts/controllers/**/*.js'

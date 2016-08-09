@@ -1,14 +1,14 @@
 // Sass utilities
-@import '../../_bower_components/foundation-sites/scss/util/util';
+@import '../../node_modules/foundation-sites/scss/util/util';
 
 // Global variables and styles
-@import "../../_bower_components/foundation-sites/scss/global";
+@import "../../node_modules/foundation-sites/scss/global";
 
 // Components
-@import '../../_bower_components/foundation-sites/scss/grid/grid';
+@import '../../node_modules/foundation-sites/scss/grid/grid';
 //@import 'typography/typography';
 //@import 'forms/forms';
-@import '../../_bower_components/foundation-sites/scss/components/visibility';
+@import '../../node_modules/foundation-sites/scss/components/visibility';
 //@import 'components/float';
 //@import 'components/button';
 //@import 'components/button-group';
@@ -21,7 +21,7 @@
 //@import 'components/drilldown';
 //@import 'components/dropdown-menu';
 //@import 'components/dropdown';
-@import '../../_bower_components/foundation-sites/scss/components/flex';
+@import '../../node_modules/foundation-sites/scss/components/flex';
 //@import 'components/flex-video';
 //@import 'components/label';
 //@import 'components/media-object';
