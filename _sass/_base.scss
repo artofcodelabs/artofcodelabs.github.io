@@ -190,10 +190,12 @@ hr{
   padding-left: 0;
   padding-right: 0;
 }
-
 .no-margin-bottom{ margin-bottom: 0 !important; }
 
 .align-center, .align_center { text-align: center; }
 .align-right{ text-align: right; }
 .align-left{ text-align: left; }
+
 .circle{ border-radius: 50%; }
+
+.alt-link-color{ color: $wet-asphalt; }
