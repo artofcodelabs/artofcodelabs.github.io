@@ -3,7 +3,8 @@ class App.Views.LastPage extends App.Models.Base
     super opts
     @windowHeight = $(window).height()
     @num = 0.618033989
-    @contactEmail = 'hello@artofcode.co'
+    at = '@'
+    @contactEmail = 'hello' + at + 'artofcode' + '.' + 'co'
 
   render: ->
     $('#last_page').css 'min-height', (@windowHeight - 16) * @num * @num
