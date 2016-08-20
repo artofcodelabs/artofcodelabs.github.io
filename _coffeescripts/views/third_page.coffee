@@ -1,19 +1,17 @@
 class App.Views.ThirdPage extends App.Models.Base
   constructor: (opts = {}) ->
     super opts
-    @windowHeight = $(window).height()
 
   render: ->
-    $('#third_page > .row:first').css 'min-height', @windowHeight
     this._renderSecretProject()
-    this._handleScrollingToAvatars()
+    this._handleLinks()
 
   _renderSecretProject: ->
     b = baffle '#secret_project_name', characters: '▒░▓▒░▓▒░<>/', speed: 161
     b.start()
 
-  _handleScrollingToAvatars: ->
-    $('a.go_to_avatars').click (e) ->
+  _handleLinks: ->
+    $('a.goto_avatars').click (e) ->
       e.preventDefault()
       top = if Foundation.MediaQuery.atLeast('medium')
         $('#open_source_header').offset().top - 16 - 18
