@@ -1,8 +1,4 @@
-body{
-  font-family: $base-font-family;
-  font-size: $base-font-size;
-  background-color: #111;
-}
+body[data-controller=Main]{
 
 /**
  * First page
@@ -130,4 +126,6 @@ body{
 img.team{
   width: 224px;
   height: 224px;
+}
+
 }
