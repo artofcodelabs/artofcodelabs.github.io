@@ -11,12 +11,6 @@ body{
 #first_page{
   background-color: #fff;
 
-  #logo_row{
-    #logo{
-      @media screen and #{breakpoint(small down)} {}
-    }
-  }
-
   #scroll_down_row{
     font-size: rem-calc(30);
   }
@@ -32,8 +26,8 @@ body{
   background-color: $sun-flower;
 
   #second_page_row_middle{
-    padding-top: 100px;
-    padding-bottom: 61px;
+    padding-top: rem-calc(75 + 36 * 1.618);
+    padding-bottom: rem-calc(36 + 36 * 1.618);
   }
 }
 
@@ -46,8 +40,8 @@ body{
   background-color: $emerald;
 
   #third_page_row_middle{
-    padding-top: 10px;
-    padding-bottom: 61px;
+    padding-top: rem-calc(36 * 1.618 - 16);
+    padding-bottom: rem-calc(50 + 36 * 1.618);
   }
 
   .project{
@@ -72,8 +66,12 @@ body{
   background-color: $peter-river;
 
   #fourth_page_row_middle{
-    padding-top: 10px;
-    padding-bottom: 61px;
+    padding-top: rem-calc(36 * 1.618 - 16);
+    padding-bottom: rem-calc(50 + 36 * 1.618);
+  }
+
+  h2{
+    margin-bottom: rem-calc(36 * 1.618 + 12);
   }
 
   .project{
@@ -86,9 +84,15 @@ body{
  */
 
 #last_page{
-  padding: rem-calc(16) 0;
+  $height: rem-calc(27 * 6);
+  min-height: $height;
+  padding: rem-calc(6) 0 rem-calc(36);
   background-color: $midnight-blue;
   color: #fff;
+
+  & > .row{
+    min-height: $height;
+  }
 
   .info_column{
     margin: rem-calc(10) 0;
@@ -100,7 +104,7 @@ body{
  */
 
 #footer{
-  padding: rem-calc(16) 0;
+  padding: rem-calc(18) 0;
   background-color: #111;
   color: #fff;
 }
@@ -109,11 +113,11 @@ body{
  * Classes
  */
 
- .page{
+.page{
   p{
     margin-bottom: rem-calc(28);
   }
- }
+}
 
 .project{
   @extend %vertical-rhythm;

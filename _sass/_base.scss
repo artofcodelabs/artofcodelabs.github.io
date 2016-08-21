@@ -77,7 +77,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: $serif-font-family;
 }
 
-h2{ font-size: rem-calc(36); }
+h2{
+  margin-bottom: rem-calc(36 * 1.618);
+  font-size: rem-calc(36);
+}
 
 /**
  * Links
@@ -109,48 +112,6 @@ a {
       }
     }
   }
-}
-
-/**
- * Blockquotes
- */
-
-blockquote {
-    border-left: 4px solid #ccc;
-    font-size: 18px;
-    letter-spacing: -1px;
-    font-style: italic;
-
-    > :last-child {
-        margin-bottom: 0;
-    }
-}
-
-/**
- * Code formatting
- */
-
-pre,
-code {
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background-color: #eef;
-}
-
-code {
-    padding: 1px 5px;
-}
-
-pre {
-    padding: 8px 12px;
-    overflow-x: auto;
-
-    > code {
-        border: 0;
-        padding-right: 0;
-        padding-left: 0;
-    }
 }
 
 /**
