@@ -13625,11 +13625,13 @@ App.Views.FirstPage = (function(superClass) {
 
   FirstPage.prototype.render = function() {
     this._setHeights();
-    this._renderMenu(Foundation.MediaQuery.current);
     this._handleLinks();
+    this._renderMenu();
+    this._renderLogo();
     return $(window).on('changed.zf.mediaquery', (function(_this) {
       return function(event, newSize, oldSize) {
-        return _this._renderMenu(Foundation.MediaQuery.current);
+        _this._renderMenu();
+        return _this._renderLogo();
       };
     })(this));
   };
@@ -13644,11 +13646,36 @@ App.Views.FirstPage = (function(superClass) {
     return $('#scroll_down_row').css('min-height', thin);
   };
 
-  FirstPage.prototype._renderMenu = function(screen) {
+  FirstPage.prototype._renderMenu = function() {
+    var screen;
+    screen = Foundation.MediaQuery.current;
     $('#goto_about').text('About');
     $('#goto_works').text(screen === 'small' ? 'Works' : 'Recent Works');
     $('#goto_os').text(screen === 'small' ? 'OS' : 'Open Source');
     return $('#goto_contact').text(screen === 'small' ? 'Info' : 'Contact');
+  };
+
+  FirstPage.prototype._renderLogo = function() {
+    var maxWidth;
+    maxWidth = (function() {
+      switch (Foundation.MediaQuery.current) {
+        case 'xxlarge':
+          return '1170px';
+        case 'xlarge':
+          return '1170px';
+        case 'large':
+          return '994px';
+        case 'medium':
+          return '993px';
+        case 'small':
+          return '300px';
+        default:
+          return null;
+      }
+    })();
+    if (maxWidth != null) {
+      return $('#logo').css('max-width', maxWidth);
+    }
   };
 
   FirstPage.prototype._handleLinks = function() {

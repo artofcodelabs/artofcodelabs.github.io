@@ -5,10 +5,12 @@ class App.Views.FirstPage extends App.Models.Base
 
   render: ->
     this._setHeights()
-    this._renderMenu Foundation.MediaQuery.current
     this._handleLinks()
+    this._renderMenu()
+    this._renderLogo()
     $(window).on 'changed.zf.mediaquery', (event, newSize, oldSize) =>
-      this._renderMenu Foundation.MediaQuery.current
+      this._renderMenu()
+      this._renderLogo()
 
   _setHeights: ->
     thin = @windowHeight * 0.1
@@ -18,11 +20,23 @@ class App.Views.FirstPage extends App.Models.Base
     $('#logo_row').css 'min-height', @windowHeight * 0.8
     $('#scroll_down_row').css 'min-height', thin
 
-  _renderMenu: (screen) ->
+  _renderMenu: ->
+    screen = Foundation.MediaQuery.current
     $('#goto_about').text 'About'
     $('#goto_works').text if screen is 'small' then 'Works' else 'Recent Works'
     $('#goto_os').text if screen is 'small' then 'OS' else 'Open Source'
     $('#goto_contact').text if screen is 'small' then 'Info' else 'Contact'
+
+  _renderLogo: ->
+    maxWidth = switch Foundation.MediaQuery.current
+      when 'xxlarge' then '1170px'
+      when 'xlarge' then '1170px'
+      when 'large' then '994px'
+      when 'medium' then '993px'
+      when 'small' then '300px'
+      else null
+    if maxWidth?
+      $('#logo').css 'max-width', maxWidth
 
   _handleLinks: ->
     $('#goto_about').click (e) =>

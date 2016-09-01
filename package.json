@@ -3,7 +3,7 @@
   "name": "aoc_co",
   "version": "1.0.0",
   "description": "Art of Code homepage",
-  "main": "index.js",
+  "main": "",
   "dependencies": {
     "baffle": "^0.3.5",
     "foundation-sites": "^6.2.3",
@@ -31,6 +31,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "zbigniew.humeniuk@gmail.com",
-  "license": "MIT"
+  "author": "Zbigniew Humeniuk",
+  "license": "UNLICENSED"
 }
