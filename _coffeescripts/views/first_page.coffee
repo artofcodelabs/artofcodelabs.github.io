@@ -32,7 +32,7 @@ class App.Views.FirstPage extends App.Models.Base
       when 'xxlarge' then '1170px'
       when 'xlarge' then '1170px'
       when 'large' then '994px'
-      when 'medium' then '993px'
+      when 'medium' then '610px'
       when 'small' then '300px'
       else null
     if maxWidth?
