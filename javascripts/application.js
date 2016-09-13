@@ -13666,7 +13666,7 @@ App.Views.FirstPage = (function(superClass) {
         case 'large':
           return '994px';
         case 'medium':
-          return '993px';
+          return '610px';
         case 'small':
           return '300px';
         default:
