@@ -11084,6 +11084,7 @@ window.App = {
   Loco: null,
   IdentityMap: null,
   Wire: null,
+  Line: null,
   Env: {
     loco: null,
     namespaceController: null,
@@ -11102,7 +11103,10 @@ window.App = {
   Presenters: {},
   Validators: {},
   I18n: {},
-  Utils: {}
+  Utils: {},
+  Channels: {
+    Loco: {}
+  }
 };
 
 var slice = [].slice,
@@ -11236,6 +11240,8 @@ App.Wire = (function() {
     this.protocolWithHost = opts.protocolWithHost;
     this.allowedDisconnectionTime = (ref3 = opts.allowedDisconnectionTime) != null ? ref3 : 10;
     this.disconnectedSinceTime = null;
+    this.uuid = null;
+    this.delayedDisconnection = false;
   }
 
   Wire.prototype.setToken = function(token) {
@@ -11244,6 +11250,10 @@ App.Wire = (function() {
 
   Wire.prototype.getSyncTime = function() {
     return this.syncTime;
+  };
+
+  Wire.prototype.setSyncTime = function(val) {
+    return this.syncTime = val;
   };
 
   Wire.prototype.resetSyncTime = function() {
@@ -11296,10 +11306,31 @@ App.Wire = (function() {
     return this.allowedDisconnectionTime = val;
   };
 
+  Wire.prototype.getUuid = function() {
+    return this.uuid;
+  };
+
+  Wire.prototype.setUuid = function(val) {
+    return this.uuid = val;
+  };
+
+  Wire.prototype.setDelayedDisconnection = function() {
+    return this.delayedDisconnection = true;
+  };
+
   Wire.prototype.connect = function() {
+    var line;
+    line = App.Env.loco.getLine();
+    if ((line != null) && !line.isWireAllowed()) {
+      return;
+    }
     return this.pollingInterval = setInterval((function(_this) {
       return function() {
-        return _this._check();
+        _this.check();
+        if (_this.delayedDisconnection) {
+          _this.delayedDisconnection = false;
+          return _this.disconnect();
+        }
       };
     })(this), this.pollingTime);
   };
@@ -11347,40 +11378,75 @@ App.Wire = (function() {
     return this.processNotification(notification);
   };
 
-  Wire.prototype._check = function() {
-    var jqxhr;
+  Wire.prototype.check = function() {
+    var request;
     if (Object.keys(App.IdentityMap.imap).length === 0 && (this.token == null) && (this.syncTime != null)) {
       return;
     }
-    jqxhr = $.ajax({
-      method: "GET",
-      url: this._getURL(),
-      data: this._requestParams()
-    });
-    jqxhr.always(function() {});
-    jqxhr.fail((function(_this) {
+    request = new XMLHttpRequest();
+    request.open('GET', this._getURL() + '?' + App.Utils.Object.toURIParams(this._requestParams()));
+    request.onload = (function(_this) {
+      return function(e) {
+        var data, i, len, notification, notifications;
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          _this.disconnectedSinceTime = null;
+          _this.syncTime = data[1];
+          notifications = data[0];
+          if (notifications.length === 0) {
+            return;
+          }
+          for (i = 0, len = notifications.length; i < len; i++) {
+            notification = notifications[i];
+            _this.processNotification(notification);
+          }
+          if (notifications.length === _this.size) {
+            return _this.check();
+          }
+        } else if (e.target.status >= 500) {
+          return _this._handleDisconnection();
+        }
+      };
+    })(this);
+    request.onerror = (function(_this) {
       return function() {
         return _this._handleDisconnection();
       };
-    })(this));
-    return jqxhr.done((function(_this) {
-      return function(data) {
-        var i, len, notification, notifications;
-        _this.disconnectedSinceTime = null;
-        _this.syncTime = data[1];
-        notifications = data[0];
-        if (notifications.length === 0) {
-          return;
-        }
-        for (i = 0, len = notifications.length; i < len; i++) {
-          notification = notifications[i];
-          _this.processNotification(notification);
-        }
-        if (notifications.length === _this.size) {
-          return _this._check();
+    })(this);
+    return request.send();
+  };
+
+  Wire.prototype.fetchSyncTime = function(opts) {
+    var request;
+    if (opts == null) {
+      opts = {};
+    }
+    request = new XMLHttpRequest();
+    request.open('GET', (this._getURL()) + "/sync-time");
+    request.onerror = (function(_this) {
+      return function() {
+        if (opts.after != null) {
+          return _this[opts.after]();
         }
       };
-    })(this));
+    })(this);
+    request.onload = (function(_this) {
+      return function(e) {
+        var data;
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          _this.syncTime = data.sync_time;
+          if (opts.after != null) {
+            return _this[opts.after]();
+          }
+        } else if (e.target.status >= 500) {
+          if (opts.after != null) {
+            return _this[opts.after]();
+          }
+        }
+      };
+    })(this);
+    return request.send();
   };
 
   Wire.prototype._emitSignalToMembers = function(id, signal, payload, model, identity, obj) {
@@ -11431,7 +11497,10 @@ App.Wire = (function() {
       synced_at: this.syncTime
     };
     if (this.token != null) {
-      params["token"] = this.token;
+      params.token = this.token;
+    }
+    if (this.uuid != null) {
+      params.uuid = this.uuid;
     }
     return params;
   };
@@ -11464,27 +11533,151 @@ App.Wire = (function() {
 
 })();
 
+App.Line = (function() {
+  function Line(opts) {
+    if (opts == null) {
+      opts = {};
+    }
+    this.connected = false;
+  }
+
+  Line.prototype.connect = function() {
+    return App.Channels.Loco.NotificationCenter = App.cable.subscriptions.create({
+      channel: "Loco::NotificationCenterChannel"
+    }, {
+      connected: (function(_this) {
+        return function() {
+          var wire;
+          console.log('ws connected');
+          _this.connected = true;
+          wire = App.Env.loco.getWire();
+          if (wire != null) {
+            wire.setDelayedDisconnection();
+          }
+          return _this._sendNotification({
+            loco: 'connected'
+          });
+        };
+      })(this),
+      disconnected: (function(_this) {
+        return function() {
+          var wire;
+          console.log('ws disconnected');
+          _this.connected = false;
+          wire = App.Env.loco.getWire();
+          if (wire != null) {
+            wire.setUuid(null);
+            wire.fetchSyncTime({
+              after: 'connect'
+            });
+          }
+          return _this._sendNotification({
+            loco: 'disconnected'
+          });
+        };
+      })(this),
+      rejected: (function(_this) {
+        return function() {
+          console.log('ws rejected');
+          return _this._sendNotification({
+            loco: 'rejected'
+          });
+        };
+      })(this),
+      received: (function(_this) {
+        return function(data) {
+          if (data.loco != null) {
+            _this._processSystemNotification(data.loco);
+            delete data.loco;
+          }
+          if (Object.keys(data).length === 0) {
+            return;
+          }
+          return _this._sendNotification(data);
+        };
+      })(this)
+    });
+  };
+
+  Line.prototype.isWireAllowed = function() {
+    return !this.connected;
+  };
+
+  Line.prototype.send = function(data) {
+    return App.Channels.Loco.NotificationCenter.send(data);
+  };
+
+  Line.prototype._processSystemNotification = function(data) {
+    var wire;
+    if (data.connection_check != null) {
+      this.send({
+        loco: {
+          connection_check: true
+        }
+      });
+    }
+    wire = App.Env.loco.getWire();
+    if (wire == null) {
+      return;
+    }
+    if (data.sync_time != null) {
+      wire.setSyncTime(data.sync_time);
+    }
+    if (data.uuid != null) {
+      console.log("uuid: " + data.uuid);
+      wire.setUuid(data.uuid);
+    }
+    if (data.notification != null) {
+      wire.processNotification(data.notification);
+    }
+    if (data.xhr_notifications != null) {
+      wire.check();
+    }
+    if (data.start_ajax_polling) {
+      console.log("wire connected");
+      this.connected = null;
+      wire.setUuid(null);
+      return wire.fetchSyncTime({
+        after: 'connect'
+      });
+    }
+  };
+
+  Line.prototype._sendNotification = function(data) {
+    var notificationCenter;
+    notificationCenter = new App.Services.NotificationCenter;
+    return notificationCenter.receivedSignal(data);
+  };
+
+  return Line;
+
+})();
+
 App.Loco = (function() {
   function Loco(opts) {
-    var initWireConditions, notificationsParams, ref, ref1, ref2;
+    var notificationsParams, ref, ref1, ref2, ref3;
     if (opts == null) {
       opts = {};
     }
     this.wire = null;
+    this.line = null;
     this.locale = null;
     this.turbolinks = (ref = opts.turbolinks) != null ? ref : false;
-    initWireConditions = (opts.notifications != null) && (opts.notifications.enable != null) && opts.notifications.enable;
-    this.initWire = initWireConditions ? true : false;
+    this.startWire = ((ref1 = opts.notifications) != null ? ref1.enable : void 0) ? true : false;
     this.postInit = opts.postInit;
-    this.setLocale((ref1 = opts.locale) != null ? ref1 : 'en');
+    this.setLocale((ref2 = opts.locale) != null ? ref2 : 'en');
     this.setProtocolWithHost(opts.protocolWithHost);
-    notificationsParams = (ref2 = opts.notifications) != null ? ref2 : {};
+    notificationsParams = (ref3 = opts.notifications) != null ? ref3 : {};
     notificationsParams.protocolWithHost = this.protocolWithHost;
     this.notificationsParams = notificationsParams;
   }
 
   Loco.prototype.getWire = function() {
     return this.wire;
+  };
+
+  Loco.prototype.getLine = function() {
+    return this.line;
   };
 
   Loco.prototype.getLocale = function() {
@@ -11513,13 +11706,11 @@ App.Loco = (function() {
   Loco.prototype.init = function() {
     var event;
     App.Env.loco = this;
-    if (this.initWire) {
-      this.wire = new App.Wire(this.notificationsParams);
-      this.wire.connect();
-    }
+    this.initWire();
+    this.initLine();
     if (this.turbolinks) {
       event = Number(this.turbolinks) >= 5 ? "turbolinks:load" : "page:change";
-      return jQuery(document).on(event, (function(_this) {
+      return document.addEventListener(event, (function(_this) {
         return function() {
           _this.flow();
           if (_this.postInit != null) {
@@ -11528,7 +11719,7 @@ App.Loco = (function() {
         };
       })(this));
     } else {
-      return jQuery((function(_this) {
+      return this.ready((function(_this) {
         return function() {
           _this.flow();
           if (_this.postInit != null) {
@@ -11539,12 +11730,40 @@ App.Loco = (function() {
     }
   };
 
+  Loco.prototype.ready = function(fn) {
+    var cond;
+    cond = document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading";
+    if (cond) {
+      return fn();
+    } else {
+      return document.addEventListener('DOMContentLoaded', fn);
+    }
+  };
+
+  Loco.prototype.initWire = function() {
+    if (!this.startWire) {
+      return;
+    }
+    this.wire = new App.Wire(this.notificationsParams);
+    return this.wire.fetchSyncTime({
+      after: 'connect'
+    });
+  };
+
+  Loco.prototype.initLine = function() {
+    if (App.cable == null) {
+      return;
+    }
+    this.line = new App.Line;
+    return this.line.connect();
+  };
+
   Loco.prototype.flow = function() {
     var action_name, controller_name, namespace_name;
     App.IdentityMap.clear();
-    namespace_name = $('body').data('namespace');
-    controller_name = $('body').data('controller');
-    action_name = $('body').data('action');
+    namespace_name = document.getElementsByTagName('body')[0].getAttribute('data-namespace');
+    controller_name = document.getElementsByTagName('body')[0].getAttribute('data-controller');
+    action_name = document.getElementsByTagName('body')[0].getAttribute('data-action');
     App.Env.action = action_name;
     if (App.Controllers[namespace_name] != null) {
       App.Env.namespaceController = new App.Controllers[namespace_name];
@@ -11575,8 +11794,12 @@ App.Loco = (function() {
     }
     if (this.wire != null) {
       this.wire.resetSyncTime();
-      return this.wire._check();
+      return this.wire.fetchSyncTime();
     }
+  };
+
+  Loco.prototype.emit = function(data) {
+    return this.line.send(data);
   };
 
   Loco.prototype.getModels = function() {
@@ -11627,34 +11850,42 @@ App.Mixins.Connectivity = (function() {
   function Connectivity() {}
 
   Connectivity.prototype.connectWith = function(data, opts) {
-    var i, identity, len, ref;
+    var i, identity, len, resource, results;
     if (opts == null) {
       opts = {};
     }
     if (data == null) {
       return null;
     }
-    if (data.constructor.name === "Array") {
-      ref = App.Utils.Array.uniq(App.Utils.Array.map(data, function(obj) {
-        return obj.getIdentity();
-      }));
-      for (i = 0, len = ref.length; i < len; i++) {
-        identity = ref[i];
+    if (data.constructor.name !== "Array") {
+      data = [data];
+    }
+    data = App.Utils.Array.uniq(data);
+    results = [];
+    for (i = 0, len = data.length; i < len; i++) {
+      resource = data[i];
+      if (resource.constructor.name === "Function") {
+        identity = resource.getIdentity();
         App.IdentityMap.addCollection(identity, {
           to: this
         });
         if (opts.receiver != null) {
-          this.receivers[identity] = opts.receiver;
+          results.push(this.receivers[identity] = opts.receiver);
+        } else {
+          results.push(void 0);
+        }
+      } else {
+        App.IdentityMap.connect(this, {
+          "with": resource
+        });
+        if (opts.receiver != null) {
+          results.push(this.receivers[resource.toKey()] = opts.receiver);
+        } else {
+          results.push(void 0);
         }
       }
-      return;
     }
-    if (opts.receiver != null) {
-      this.receivers[data.toKey()] = opts.receiver;
-    }
-    return App.IdentityMap.connect(this, {
-      "with": data
-    });
+    return results;
   };
 
   Connectivity.prototype.receiverFor = function(data) {
@@ -11721,6 +11952,57 @@ App.Utils.Collection = (function() {
 
 })();
 
+App.Utils.Dom = (function() {
+  function Dom() {}
+
+  Dom.hasClass = function(el, className) {
+    if (el.classList) {
+      return el.classList.contains(className);
+    } else {
+      return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+    }
+  };
+
+  Dom.addClass = function(el, className) {
+    if (el.classList) {
+      return el.classList.add(className);
+    } else {
+      return el.className += ' ' + className;
+    }
+  };
+
+  Dom.removeClass = function(el, className) {
+    if (el.classList) {
+      return el.classList.remove(className);
+    } else {
+      return el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    }
+  };
+
+  return Dom;
+
+})();
+
+App.Utils.Object = (function() {
+  function Object() {}
+
+  Object.toURIParams = function(obj) {
+    var key, str, val;
+    str = "";
+    for (key in obj) {
+      val = obj[key];
+      if (str !== "") {
+        str += "&";
+      }
+      str += key + "=" + encodeURIComponent(val);
+    }
+    return str;
+  };
+
+  return Object;
+
+})();
+
 App.Utils.String = (function() {
   function String() {}
 
@@ -11737,7 +12019,7 @@ App.Validators.Base = (function() {
 
   Base.instance = function(obj, attr, opts) {
     var sharedInstance, validatorName;
-    validatorName = this.name;
+    validatorName = this.identity;
     if (this.sharedInstances[validatorName] == null) {
       this.sharedInstances[validatorName] = new App.Validators[validatorName];
     }
@@ -11769,6 +12051,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
 App.Validators.Absence = (function(superClass) {
   extend(Absence, superClass);
+
+  Absence.identity = "Absence";
 
   function Absence() {
     Absence.__super__.constructor.apply(this, arguments);
@@ -11806,6 +12090,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
 App.Validators.Confirmation = (function(superClass) {
   extend(Confirmation, superClass);
+
+  Confirmation.identity = "Confirmation";
 
   function Confirmation() {
     Confirmation.__super__.constructor.apply(this, arguments);
@@ -11846,6 +12132,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 App.Validators.Exclusion = (function(superClass) {
   extend(Exclusion, superClass);
 
+  Exclusion.identity = "Exclusion";
+
   function Exclusion() {
     Exclusion.__super__.constructor.apply(this, arguments);
   }
@@ -11876,6 +12164,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
 App.Validators.Format = (function(superClass) {
   extend(Format, superClass);
+
+  Format.identity = "Format";
 
   function Format() {
     Format.__super__.constructor.apply(this, arguments);
@@ -11908,6 +12198,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 App.Validators.Inclusion = (function(superClass) {
   extend(Inclusion, superClass);
 
+  Inclusion.identity = "Inclusion";
+
   function Inclusion() {
     Inclusion.__super__.constructor.apply(this, arguments);
   }
@@ -11938,6 +12230,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
 App.Validators.Length = (function(superClass) {
   extend(Length, superClass);
+
+  Length.identity = "Length";
 
   function Length() {
     Length.__super__.constructor.apply(this, arguments);
@@ -12006,6 +12300,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 
 App.Validators.Numericality = (function(superClass) {
   extend(Numericality, superClass);
+
+  Numericality.identity = "Numericality";
 
   function Numericality() {
     Numericality.__super__.constructor.apply(this, arguments);
@@ -12131,6 +12427,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 App.Validators.Presence = (function(superClass) {
   extend(Presence, superClass);
 
+  Presence.identity = "Presence";
+
   function Presence() {
     Presence.__super__.constructor.apply(this, arguments);
   }
@@ -12168,6 +12466,8 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 App.Validators.Size = (function(superClass) {
   extend(Size, superClass);
 
+  Size.identity = "Size";
+
   function Size() {
     Size.__super__.constructor.apply(this, arguments);
   }
@@ -12204,7 +12504,7 @@ App.Models.Base = (function() {
   };
 
   Base.find = function(idOrObj) {
-    var id, jqxhr, urlParams;
+    var id, req, urlParams;
     urlParams = {};
     if (typeof idOrObj === "object") {
       urlParams = idOrObj;
@@ -12213,23 +12513,23 @@ App.Models.Base = (function() {
     } else {
       id = idOrObj;
     }
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: 'GET',
-      url: (this.__getResourcesUrl(urlParams)) + "/" + id,
-      data: urlParams
-    });
+    req = new XMLHttpRequest();
+    req.open('GET', (this.__getResourcesUrl(urlParams)) + "/" + id);
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.send(JSON.stringify(urlParams));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(record) {
-          var obj;
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var obj, record;
+          record = JSON.parse(e.target.response);
           obj = _this.__initSubclass(record);
           App.IdentityMap.add(obj);
           return resolve(obj);
-        });
+        };
       };
     })(this));
   };
@@ -12338,7 +12638,7 @@ App.Models.Base = (function() {
   };
 
   Base.__page = function(i, opts, reqOpts, resp) {
-    var data, httpMethod, jqxhr, key, ref, url, val;
+    var data, httpMethod, key, ref, ref1, req, url, val;
     if (opts == null) {
       opts = {};
     }
@@ -12365,19 +12665,23 @@ App.Models.Base = (function() {
       }
     }
     data[this.__getPaginationParam()] = i;
-    jqxhr = $.ajax({
-      dataType: "json",
-      method: httpMethod,
-      url: url,
-      data: data
-    });
+    if (httpMethod === 'GET') {
+      url = url + '?' + App.Utils.Object.toURIParams(data);
+    }
+    req = new XMLHttpRequest();
+    req.open(httpMethod, url);
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-CSRF-Token", (ref1 = document.querySelector("meta[name='csrf-token']")) != null ? ref1.content : void 0);
+    req.send(JSON.stringify(data));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(data) {
-          var j, len, obj, record, ref1;
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var j, len, obj, record, ref2;
+          data = JSON.parse(e.target.response);
           resp.count = data.count;
           for (key in data) {
             val = data[key];
@@ -12385,9 +12689,9 @@ App.Models.Base = (function() {
               resp[key] = val;
             }
           }
-          ref1 = data.resources;
-          for (j = 0, len = ref1.length; j < len; j++) {
-            record = ref1[j];
+          ref2 = data.resources;
+          for (j = 0, len = ref2.length; j < len; j++) {
+            record = ref2[j];
             obj = _this.__initSubclass(record);
             if (opts.resource != null) {
               obj.resource = opts.resource;
@@ -12396,7 +12700,7 @@ App.Models.Base = (function() {
             resp.resources.push(obj);
           }
           return resolve(resp);
-        });
+        };
       };
     })(this));
   };
@@ -12478,7 +12782,7 @@ App.Models.Base = (function() {
   };
 
   Base.prototype.getIdentity = function() {
-    return this.constructor.identity;
+    return this.constructor.getIdentity();
   };
 
   Base.prototype.getAttrRemoteName = function(attr) {
@@ -12539,7 +12843,7 @@ App.Models.Base = (function() {
         break;
       case "Boolean":
       case "Bool":
-        val = Boolean(parseInt(val));
+        val = typeof val === 'boolean' ? val : Boolean(parseInt(val));
         break;
       case "Number":
         val = Number(val);
@@ -12643,19 +12947,22 @@ App.Models.Base = (function() {
   };
 
   Base.prototype.save = function() {
-    var jqxhr;
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: this.id != null ? "PUT" : "POST",
-      url: this.__getResourceUrl(),
-      data: this.serialize()
-    });
+    var httpMeth, ref, req;
+    httpMeth = this.id != null ? "PUT" : "POST";
+    req = new XMLHttpRequest();
+    req.open(httpMeth, this.__getResourceUrl());
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+    req.send(JSON.stringify(this.serialize()));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(data) {
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var data;
+          data = JSON.parse(e.target.response);
           if (data.success) {
             resolve(data);
             return;
@@ -12664,34 +12971,40 @@ App.Models.Base = (function() {
             _this.__assignRemoteErrorMessages(data.errors);
           }
           return resolve(data);
-        });
+        };
       };
     })(this));
   };
 
   Base.prototype.updateAttribute = function(attr) {
-    var jqxhr;
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: 'PUT',
-      url: this.__getResourceUrl(),
-      data: this.serialize(attr)
-    });
+    var ref, req;
+    req = new XMLHttpRequest();
+    req.open('PUT', this.__getResourceUrl());
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+    req.send(JSON.stringify(this.serialize(attr)));
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        jqxhr.fail(function(xhr) {
-          return reject(xhr);
-        });
-        return jqxhr.done(function(data) {
-          if (data.success) {
-            resolve(data);
-            return;
+        req.onerror = function(e) {
+          return reject(e);
+        };
+        return req.onload = function(e) {
+          var data;
+          if (e.target.status >= 200 && e.target.status < 400) {
+            data = JSON.parse(e.target.response);
+            if (data.success) {
+              resolve(data);
+              return;
+            }
+            if (data.errors != null) {
+              _this.__assignRemoteErrorMessages(data.errors);
+            }
+            return resolve(data);
+          } else if (e.target.status >= 500) {
+            return reject(e);
           }
-          if (data.errors != null) {
-            _this.__assignRemoteErrorMessages(data.errors);
-          }
-          return resolve(data);
-        });
+        };
       };
     })(this));
   };
@@ -12742,7 +13055,7 @@ App.Models.Base = (function() {
     for (name in ref) {
       val = ref[name];
       if (val !== currentObj[name]) {
-        if (val.constructor === Date && currentObj[name] - val === 0) {
+        if ((val != null) && val.constructor === Date && currentObj[name] - val === 0) {
           continue;
         }
         if (val !== currentObj[name]) {
@@ -12800,24 +13113,29 @@ App.Models.Base = (function() {
   };
 
   Base.prototype.__send = function(method, action, data) {
-    var jqxhr, url;
+    var ref, req, url;
     url = this.__getResourceUrl();
     if (action != null) {
       url = url + "/" + action;
     }
-    jqxhr = $.ajax({
-      dataType: 'json',
-      method: method,
-      url: url,
-      data: data
-    });
+    req = new XMLHttpRequest();
+    req.open(method, url);
+    req.setRequestHeader("Accept", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+    req.send(JSON.stringify(data));
     return new Promise(function(resolve, reject) {
-      jqxhr.fail(function(xhr) {
-        return reject(xhr);
-      });
-      return jqxhr.done(function(data) {
-        return resolve(data);
-      });
+      req.onerror = function(e) {
+        return reject(e);
+      };
+      return req.onload = function(e) {
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          return resolve(data);
+        } else if (e.target.status >= 500) {
+          return reject(e);
+        }
+      };
     });
   };
 
@@ -13044,8 +13362,14 @@ App.UI.Form = (function() {
     this.callbackFailure = opts.callbackFailure;
     this.callbackActive = opts.callbackActive;
     this.form = this._findForm();
-    this.submit = this.form.find(':submit');
-    this.submitVal = this.submit.val();
+    this.submit = null;
+    this.submitVal = null;
+    if (this.form != null) {
+      this.submit = this.form.querySelector('[type="submit"]');
+    }
+    if (this.submit != null) {
+      this.submitVal = this.submit.value;
+    }
     this.locale = App.Env.loco.getLocale();
   }
 
@@ -13056,14 +13380,15 @@ App.UI.Form = (function() {
   Form.prototype.render = function() {
     if (this.initObj) {
       this._assignAttribs();
-    } else {
+      return this._handle();
+    } else if (this.form != null) {
       this.fill();
+      return this._handle();
     }
-    return this._handle();
   };
 
   Form.prototype.fill = function(attr) {
-    var _, attributes, formEl, name, radioEl, remoteName, results, uniqInputTypes;
+    var _, attributes, formEl, name, query, radioEl, remoteName, results, uniqInputTypes;
     if (attr == null) {
       attr = null;
     }
@@ -13083,29 +13408,36 @@ App.UI.Form = (function() {
     for (name in attributes) {
       _ = attributes[name];
       remoteName = this.obj.getAttrRemoteName(name);
-      formEl = this.form.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
+      query = this.form.querySelector("[data-attr=" + remoteName + "]");
+      if (query === null) {
+        continue;
+      }
+      formEl = query.querySelectorAll("input,textarea,select");
+      if (formEl.length === 0) {
+        continue;
+      }
       if (formEl.length === 1) {
-        formEl.val(this.obj[name]);
+        formEl[0].value = this.obj[name];
         continue;
       }
       uniqInputTypes = App.Utils.Array.uniq(App.Utils.Array.map(formEl, function(e) {
-        return $(e).attr('type');
+        return e.getAttribute('type');
       }));
       if (uniqInputTypes.length === 1 && uniqInputTypes[0] === 'radio') {
         radioEl = App.Utils.Collection.find(formEl, (function(_this) {
           return function(e) {
-            return $(e).val() === String(_this.obj[name]);
+            return e.value === String(_this.obj[name]);
           };
         })(this));
         if (radioEl != null) {
-          $(radioEl).prop('checked', true);
+          radioEl.checked = true;
           continue;
         }
       }
-      if (formEl.first().attr("type") !== "hidden" && formEl.last().attr('type') !== "checkbox") {
+      if (formEl[0].getAttribute("type") !== "hidden" && formEl[formEl.length - 1].getAttribute('type') !== "checkbox") {
         continue;
       }
-      results.push(formEl.last().prop('checked', Boolean(this.obj[name])));
+      results.push(formEl[formEl.length - 1].checked = Boolean(this.obj[name]));
     }
     return results;
   };
@@ -13113,20 +13445,20 @@ App.UI.Form = (function() {
   Form.prototype._findForm = function() {
     var objName;
     if (this.formId != null) {
-      return $("#" + this.formId);
+      return document.getElementById("" + this.formId);
     }
     if (this.obj != null) {
       objName = this.obj.getIdentity().toLowerCase();
       if (this.obj.id != null) {
-        return $("#edit_" + objName + "_" + this.obj.id);
+        return document.getElementById("edit_" + objName + "_" + this.obj.id);
       } else {
-        return $("#new_" + objName);
+        return document.getElementById("new_" + objName);
       }
     }
   };
 
   Form.prototype._handle = function() {
-    return this.form.on('submit', (function(_this) {
+    return this.form.addEventListener('submit', (function(_this) {
       return function(e) {
         var clearForm;
         e.preventDefault();
@@ -13166,43 +13498,57 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._canBeSubmitted = function() {
-    if (this.submit.hasClass('active')) {
+    if (this.submit == null) {
+      return true;
+    }
+    if (App.Utils.Dom.hasClass(this.submit, 'active')) {
       return false;
     }
-    if (this.submit.hasClass('success')) {
+    if (App.Utils.Dom.hasClass(this.submit, 'success')) {
       return false;
     }
-    if (this.submit.hasClass('failure')) {
+    if (App.Utils.Dom.hasClass(this.submit, 'failure')) {
       return false;
     }
     return true;
   };
 
   Form.prototype._submitForm = function() {
-    var jqxhr, url;
+    var data, ref, req, url;
     this._submittingForm();
-    url = this.form.attr('action') + '.json';
-    jqxhr = $.post(url, this.form.serialize());
-    jqxhr.always((function(_this) {
-      return function() {
+    url = this.form.getAttribute('action') + '.json';
+    data = new FormData(this.form);
+    req = new XMLHttpRequest();
+    req.open('POST', url);
+    req.setRequestHeader("X-CSRF-Token", (ref = document.querySelector("meta[name='csrf-token']")) != null ? ref.content : void 0);
+    req.onload = (function(_this) {
+      return function(e) {
         _this._alwaysAfterRequest();
-        return _this.submit.blur();
-      };
-    })(this));
-    jqxhr.fail((function(_this) {
-      return function() {
-        return _this._connectionError();
-      };
-    })(this));
-    return jqxhr.done((function(_this) {
-      return function(data) {
-        if (data.success) {
-          return _this._handleSuccess(data, _this.form.attr("method") === "POST");
-        } else {
-          return _this._renderErrors(data.errors);
+        if (_this.submit != null) {
+          _this.submit.blur();
+        }
+        if (e.target.status >= 200 && e.target.status < 400) {
+          data = JSON.parse(e.target.response);
+          if (data.success) {
+            return _this._handleSuccess(data, _this.form.getAttribute("method") === "POST");
+          } else {
+            return _this._renderErrors(data.errors);
+          }
+        } else if (e.target.status >= 500) {
+          return _this._connectionError();
         }
       };
-    })(this));
+    })(this);
+    req.onerror = (function(_this) {
+      return function() {
+        _this._alwaysAfterRequest();
+        if (_this.submit != null) {
+          _this.submit.blur();
+        }
+        return _this._connectionError();
+      };
+    })(this);
+    return req.send(data);
   };
 
   Form.prototype._handleSuccess = function(data, clearForm) {
@@ -13211,7 +13557,10 @@ App.UI.Form = (function() {
       clearForm = true;
     }
     val = (ref = (ref1 = data.flash) != null ? ref1.success : void 0) != null ? ref : App.I18n[this.locale].ui.form.success;
-    this.submit.addClass('success').val(val);
+    if (this.submit != null) {
+      App.Utils.Dom.addClass(this.submit, 'success');
+      this.submit.value = val;
+    }
     if (data.access_token != null) {
       App.Env.loco.getWire().setToken(data.access_token);
     }
@@ -13225,18 +13574,28 @@ App.UI.Form = (function() {
     }
     return setTimeout((function(_this) {
       return function() {
-        var selector;
-        _this.submit.removeAttr('disabled').removeClass('success').val(_this.submitVal);
+        var i, len, node, nodes, results, selector;
+        if (_this.submit != null) {
+          _this.submit.disabled = false;
+          App.Utils.Dom.removeClass(_this.submit, 'success');
+          _this.submit.value = _this.submitVal;
+        }
         selector = ":not([data-loco-not-clear=true])";
         if (clearForm) {
-          return _this.form.find("input:not([type='submit'])" + selector + ", textarea" + selector).val('');
+          nodes = _this.form.querySelectorAll("input:not([type='submit'])" + selector + ", textarea" + selector);
+          results = [];
+          for (i = 0, len = nodes.length; i < len; i++) {
+            node = nodes[i];
+            results.push(node.value = '');
+          }
+          return results;
         }
       };
     })(this), 5000);
   };
 
   Form.prototype._renderErrors = function(remoteErrors) {
-    var attrib, data, errors, remoteName;
+    var attrib, data, errors, i, len, node, nodes, query, remoteName;
     if (remoteErrors == null) {
       remoteErrors = null;
     }
@@ -13251,32 +13610,57 @@ App.UI.Form = (function() {
       errors = data[attrib];
       remoteName = this.obj != null ? this.obj.getAttrRemoteName(attrib) : attrib;
       if ((remoteName != null) && attrib !== "base") {
-        this.form.find("[data-attr=" + remoteName + "]").find(".errors[data-for=" + remoteName + "]").text(errors[0]);
+        query = this.form.querySelector("[data-attr=" + remoteName + "]");
+        if (query === null) {
+          continue;
+        }
+        nodes = query.querySelectorAll(".errors[data-for=" + remoteName + "]");
+        if (nodes.length === 0) {
+          continue;
+        }
+        for (i = 0, len = nodes.length; i < len; i++) {
+          node = nodes[i];
+          node.textContent = errors[0];
+        }
         continue;
       }
       if (attrib === "base" && errors.length > 0) {
-        if ($(".errors[data-for='base']").length === 1) {
-          $(".errors[data-for='base']").text(errors[0]);
-        } else {
-          this.submit.val(errors[0]);
+        nodes = document.querySelectorAll(".errors[data-for='base']");
+        if (nodes.length === 1) {
+          nodes[0].textContent = errors[0];
+        } else if (this.submit != null) {
+          this.submit.value = errors[0];
         }
       }
     }
-    if (this.submit.val() === this.submitVal || this.submit.val() === App.I18n[this.locale].ui.form.sending) {
-      this.submit.val(App.I18n[this.locale].ui.form.errors.invalid_data);
+    if (this.submit != null) {
+      if (this.submit.value === this.submitVal || this.submit.value === App.I18n[this.locale].ui.form.sending) {
+        this.submit.value = App.I18n[this.locale].ui.form.errors.invalid_data;
+      }
+      App.Utils.Dom.addClass(this.submit, 'failure');
     }
-    this.submit.addClass('failure');
     this._showErrors();
     return setTimeout((function(_this) {
       return function() {
-        _this.submit.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
-        return _this.form.find('input.invalid, textarea.invalid, select.invalid').removeClass('invalid');
+        var j, len1, ref, results;
+        if (_this.submit != null) {
+          _this.submit.disabled = false;
+          App.Utils.Dom.removeClass(_this.submit, 'failure');
+          _this.submit.val = _this.submitVal;
+        }
+        ref = _this.form.querySelectorAll('input.invalid, textarea.invalid, select.invalid');
+        results = [];
+        for (j = 0, len1 = ref.length; j < len1; j++) {
+          node = ref[j];
+          results.push(App.Utils.Dom.removeClass(node, 'invalid'));
+        }
+        return results;
       };
     })(this), 1000);
   };
 
   Form.prototype._assignAttribs = function() {
-    var _, formEl, name, radioEl, ref, remoteName, results, uniqInputTypes;
+    var _, formEl, name, query, radioEl, ref, remoteName, results, uniqInputTypes;
     if (this.obj.constructor.attributes == null) {
       return null;
     }
@@ -13285,63 +13669,85 @@ App.UI.Form = (function() {
     for (name in ref) {
       _ = ref[name];
       remoteName = this.obj.getAttrRemoteName(name);
-      formEl = this.form.find("[data-attr=" + remoteName + "]").find("input,textarea,select");
+      query = this.form.querySelector("[data-attr=" + remoteName + "]");
+      if (query === null) {
+        continue;
+      }
+      formEl = query.querySelectorAll("input,textarea,select");
+      if (formEl.length === 0) {
+        continue;
+      }
       if (formEl.length === 1) {
-        this.obj.assignAttr(name, formEl.val());
+        this.obj.assignAttr(name, formEl[0].value);
         continue;
       }
       uniqInputTypes = App.Utils.Array.uniq(App.Utils.Array.map(formEl, function(e) {
-        return $(e).attr('type');
+        return e.getAttribute('type');
       }));
       if (uniqInputTypes.length === 1 && uniqInputTypes[0] === 'radio') {
         radioEl = App.Utils.Collection.find(formEl, (function(_this) {
           return function(e) {
-            return $(e).is(':checked');
+            return e.checked === true;
           };
         })(this));
         if (radioEl != null) {
-          this.obj.assignAttr(name, $(radioEl).val());
+          this.obj.assignAttr(name, radioEl.value);
           continue;
         }
       }
-      if (formEl.first().attr("type") !== "hidden" && formEl.last().attr('type') !== "checkbox") {
+      if (formEl[0].getAttribute("type") !== "hidden" && formEl[formEl.length - 1].getAttribute('type') !== "checkbox") {
         continue;
       }
-      if (formEl.last().is(":checked")) {
-        results.push(this.obj.assignAttr(name, formEl.last().val()));
+      if (formEl[formEl.length - 1].checked === true) {
+        results.push(this.obj.assignAttr(name, formEl[formEl.length - 1].value));
       } else {
-        results.push(this.obj.assignAttr(name, formEl.first().val()));
+        results.push(this.obj.assignAttr(name, formEl[0].value));
       }
     }
     return results;
   };
 
   Form.prototype._hideErrors = function() {
-    return this.form.find('.errors').each((function(_this) {
-      return function(index, e) {
-        if ($(e).text().trim().length > 0) {
-          $(e).text("");
-          return $(e).hide();
-        }
-      };
-    })(this));
+    var e, i, len, ref, results;
+    ref = this.form.querySelectorAll('.errors');
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      e = ref[i];
+      if (e.textContent.trim().length > 0) {
+        e.textContent = '';
+        results.push(e.style.display = 'none');
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
   };
 
   Form.prototype._showErrors = function() {
-    return this.form.find('.errors').each((function(_this) {
-      return function(index, e) {
-        if ($(e).text().trim().length > 0) {
-          return $(e).show();
-        }
-      };
-    })(this));
+    var e, i, len, ref, results;
+    ref = this.form.querySelectorAll('.errors');
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      e = ref[i];
+      if (e.textContent.trim().length > 0) {
+        results.push(e.style.display = 'block');
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
   };
 
   Form.prototype._submittingForm = function(hideErrors) {
     if (hideErrors == null) {
       hideErrors = true;
     }
-    this.submit.removeClass('success').removeClass('failure').addClass('active').val(App.I18n[this.locale].ui.form.sending);
+    if (this.submit != null) {
+      App.Utils.Dom.removeClass(this.submit, 'success');
+      App.Utils.Dom.removeClass(this.submit, 'failure');
+      App.Utils.Dom.addClass(this.submit, 'active');
+      this.submit.value = App.I18n[this.locale].ui.form.sending;
+    }
     if (this.callbackActive != null) {
       this.delegator[this.callbackActive]();
     }
@@ -13351,16 +13757,26 @@ App.UI.Form = (function() {
   };
 
   Form.prototype._connectionError = function() {
-    this.submit.removeClass('active').addClass('failure').val(App.I18n[this.locale].ui.form.errors.connection);
+    if (this.submit == null) {
+      return;
+    }
+    App.Utils.Dom.removeClass(this.submit, 'active');
+    App.Utils.Dom.addClass(this.submit, 'failure');
+    this.submit.val = App.I18n[this.locale].ui.form.errors.connection;
     return setTimeout((function(_this) {
       return function() {
-        return _this.submit.removeAttr('disabled').removeClass('failure').val(_this.submitVal);
+        _this.submit.disabled = false;
+        App.Utils.Dom.removeClass(_this.submit, 'failure');
+        return _this.submit.val = _this.submitVal;
       };
     })(this), 3000);
   };
 
   Form.prototype._alwaysAfterRequest = function() {
-    return this.submit.removeClass("active");
+    if (this.submit == null) {
+      return;
+    }
+    return App.Utils.Dom.removeClass(this.submit, 'active');
   };
 
   return Form;
@@ -13489,12 +13905,21 @@ App.Services.Date = (function() {
         }
       };
     })(this));
-    return str = str.replace('%M', (function(_this) {
+    str = str.replace('%M', (function(_this) {
       return function(x) {
         if (_this.date.getMinutes() >= 10) {
           return _this.date.getMinutes();
         } else {
           return "0" + (_this.date.getMinutes());
+        }
+      };
+    })(this));
+    return str = str.replace('%S', (function(_this) {
+      return function(x) {
+        if (_this.date.getSeconds() >= 10) {
+          return _this.date.getSeconds();
+        } else {
+          return "0" + (_this.date.getSeconds());
         }
       };
     })(this));
@@ -13513,7 +13938,7 @@ App.Helpers.Text = (function() {
 
   Text.prototype.simpleFormat = function(str) {
     str = str.replace(/\r\n?/, "\n");
-    str = $.trim(str);
+    str = str.trim();
     if (str.length > 0) {
       str = str.replace(/\n\n+/g, '</p><p>');
       str = str.replace(/\n/g, '<br>');
