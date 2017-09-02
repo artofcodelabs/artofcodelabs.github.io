@@ -5,7 +5,7 @@
   "description": "Art of Code homepage",
   "main": "",
   "dependencies": {
-    "baffle": "~0.3.5",
+    "baffle": "~0.3.6",
     "foundation-sites": "~6.2.3",
     "jquery": "~2.2.4",
     "loco-js": "~1.5.2"
