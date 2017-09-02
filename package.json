@@ -5,10 +5,10 @@
   "description": "Art of Code homepage",
   "main": "",
   "dependencies": {
-    "baffle": "^0.3.5",
-    "foundation-sites": "^6.2.3",
-    "jquery": "^2.2.4",
-    "loco-js": "^1.0.0"
+    "baffle": "~0.3.5",
+    "foundation-sites": "~6.2.3",
+    "jquery": "~2.2.4",
+    "loco-js": "~1.0.0"
   },
   "devDependencies": {
     "del": "~2.2.2",

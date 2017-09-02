@@ -428,10 +428,11 @@ button {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-flow: row wrap;
-      flex-flow: row wrap; }
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap; }
   .row .row {
-    max-width: none;
     margin-left: -0.625rem;
     margin-right: -0.625rem; }
     @media screen and (min-width: 40em) {
@@ -443,6 +444,11 @@ button {
   .row.collapse > .column, .row.collapse > .columns {
     padding-left: 0;
     padding-right: 0; }
+  .row.is-collapse-child,
+  .row.collapse > .column > .row,
+  .row.collapse > .columns > .row {
+    margin-left: 0;
+    margin-right: 0; }
 
 .column, .columns {
   -webkit-box-flex: 1;
@@ -459,11 +465,12 @@ button {
 .column.row.row, .row.row.columns {
   float: none;
   display: block; }
-  .row .column.row.row, .row .row.row.columns {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 0;
-    margin-right: 0; }
+
+.row .column.row.row, .row .row.row.columns {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0; }
 
 .small-1 {
   -webkit-box-flex: 0;
@@ -1095,10 +1102,12 @@ button {
 
 .column.align-middle, .align-middle.columns {
   -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
       align-self: center; }
 
 .column.align-stretch, .align-stretch.columns {
   -ms-flex-item-align: stretch;
+      -ms-grid-row-align: stretch;
       align-self: stretch; }
 
 .hide {
@@ -1208,7 +1217,6 @@ button {
 .align-top {
   -webkit-box-align: start;
       -ms-flex-align: start;
-              -ms-grid-row-align: flex-start;
           align-items: flex-start; }
 
 .align-self-top {
@@ -1218,7 +1226,6 @@ button {
 .align-bottom {
   -webkit-box-align: end;
       -ms-flex-align: end;
-              -ms-grid-row-align: flex-end;
           align-items: flex-end; }
 
 .align-self-bottom {
@@ -1228,21 +1235,21 @@ button {
 .align-middle {
   -webkit-box-align: center;
       -ms-flex-align: center;
-              -ms-grid-row-align: center;
           align-items: center; }
 
 .align-self-middle {
   -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
       align-self: center; }
 
 .align-stretch {
   -webkit-box-align: stretch;
       -ms-flex-align: stretch;
-              -ms-grid-row-align: stretch;
           align-items: stretch; }
 
 .align-self-stretch {
   -ms-flex-item-align: stretch;
+      -ms-grid-row-align: stretch;
       align-self: stretch; }
 
 .small-order-1 {
