@@ -1,7 +1,7 @@
 class App.Views.FirstPage extends App.Models.Base
   constructor: (opts = {}) ->
     super opts
-    @windowHeight = $(window).height()
+    @windowHeight = window.innerHeight
 
   render: ->
     this._setHeights()
@@ -14,18 +14,20 @@ class App.Views.FirstPage extends App.Models.Base
 
   _setHeights: ->
     thin = @windowHeight * 0.1
-    $('#menu_row').css 'min-height', thin
-    $('#menu_row > div.columns').css 'min-height', thin
-    $('#menu_row > div.columns > div.row').css 'min-height', thin
-    $('#logo_row').css 'min-height', @windowHeight * 0.8
-    $('#scroll_down_row').css 'min-height', thin
+    document.getElementById('menu_row').style.minHeight = "#{thin}px"
+    for el in document.querySelectorAll('#menu_row > div.columns')
+      el.style.minHeight = "#{thin}px"
+    for el in document.querySelectorAll('#menu_row > div.columns > div.row')
+      el.style.minHeight = "#{thin}px"
+    document.getElementById('logo_row').style.minHeight = "#{@windowHeight * 0.8}px"
+    document.getElementById('scroll_down_row').style.minHeight = "#{thin}px"
 
   _renderMenu: ->
     screen = Foundation.MediaQuery.current
-    $('#goto_about').text 'About'
-    $('#goto_works').text if screen is 'small' then 'Works' else 'Recent Works'
-    $('#goto_os').text if screen is 'small' then 'OS' else 'Open Source'
-    $('#goto_contact').text if screen is 'small' then 'Info' else 'Contact'
+    document.getElementById('goto_about').textContent = 'About'
+    document.getElementById('goto_works').textContent = if screen is 'small' then 'Works' else 'Recent Works'
+    document.getElementById('goto_os').textContent = if screen is 'small' then 'OS' else 'Open Source'
+    document.getElementById('goto_contact').textContent = if screen is 'small' then 'Info' else 'Contact'
 
   _renderLogo: ->
     maxWidth = switch Foundation.MediaQuery.current
@@ -36,19 +38,19 @@ class App.Views.FirstPage extends App.Models.Base
       when 'small' then '300px'
       else null
     if maxWidth?
-      $('#logo').css 'max-width', maxWidth
+      document.getElementById('logo').style.maxWidth = maxWidth
 
   _handleLinks: ->
-    $('#goto_about').click (e) =>
+    document.getElementById('goto_about').addEventListener 'click', (e) =>
       e.preventDefault()
       this._animate $('#second_page').offset().top + 75
-    $('#goto_works').click (e) =>
+    document.getElementById('goto_works').addEventListener 'click', (e) =>
       e.preventDefault()
       this._animate $('#third_page').offset().top - 25
-    $('#goto_os').click (e) =>
+    document.getElementById('goto_os').addEventListener 'click', (e) =>
       e.preventDefault()
       this._animate $('#fourth_page').offset().top - 25
-    $('#goto_contact').click (e) =>
+    document.getElementById('goto_contact').addEventListener 'click', (e) =>
       e.preventDefault()
       this._animate $('#last_page').offset().top
 

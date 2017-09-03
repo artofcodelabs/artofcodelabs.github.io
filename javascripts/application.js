@@ -14044,7 +14044,7 @@ App.Views.FirstPage = (function(superClass) {
       opts = {};
     }
     FirstPage.__super__.constructor.call(this, opts);
-    this.windowHeight = $(window).height();
+    this.windowHeight = window.innerHeight;
   }
 
   FirstPage.prototype.render = function() {
@@ -14061,22 +14061,30 @@ App.Views.FirstPage = (function(superClass) {
   };
 
   FirstPage.prototype._setHeights = function() {
-    var thin;
+    var el, i, j, len, len1, ref, ref1, thin;
     thin = this.windowHeight * 0.1;
-    $('#menu_row').css('min-height', thin);
-    $('#menu_row > div.columns').css('min-height', thin);
-    $('#menu_row > div.columns > div.row').css('min-height', thin);
-    $('#logo_row').css('min-height', this.windowHeight * 0.8);
-    return $('#scroll_down_row').css('min-height', thin);
+    document.getElementById('menu_row').style.minHeight = thin + "px";
+    ref = document.querySelectorAll('#menu_row > div.columns');
+    for (i = 0, len = ref.length; i < len; i++) {
+      el = ref[i];
+      el.style.minHeight = thin + "px";
+    }
+    ref1 = document.querySelectorAll('#menu_row > div.columns > div.row');
+    for (j = 0, len1 = ref1.length; j < len1; j++) {
+      el = ref1[j];
+      el.style.minHeight = thin + "px";
+    }
+    document.getElementById('logo_row').style.minHeight = (this.windowHeight * 0.8) + "px";
+    return document.getElementById('scroll_down_row').style.minHeight = thin + "px";
   };
 
   FirstPage.prototype._renderMenu = function() {
     var screen;
     screen = Foundation.MediaQuery.current;
-    $('#goto_about').text('About');
-    $('#goto_works').text(screen === 'small' ? 'Works' : 'Recent Works');
-    $('#goto_os').text(screen === 'small' ? 'OS' : 'Open Source');
-    return $('#goto_contact').text(screen === 'small' ? 'Info' : 'Contact');
+    document.getElementById('goto_about').textContent = 'About';
+    document.getElementById('goto_works').textContent = screen === 'small' ? 'Works' : 'Recent Works';
+    document.getElementById('goto_os').textContent = screen === 'small' ? 'OS' : 'Open Source';
+    return document.getElementById('goto_contact').textContent = screen === 'small' ? 'Info' : 'Contact';
   };
 
   FirstPage.prototype._renderLogo = function() {
@@ -14098,30 +14106,30 @@ App.Views.FirstPage = (function(superClass) {
       }
     })();
     if (maxWidth != null) {
-      return $('#logo').css('max-width', maxWidth);
+      return document.getElementById('logo').style.maxWidth = maxWidth;
     }
   };
 
   FirstPage.prototype._handleLinks = function() {
-    $('#goto_about').click((function(_this) {
+    document.getElementById('goto_about').addEventListener('click', (function(_this) {
       return function(e) {
         e.preventDefault();
         return _this._animate($('#second_page').offset().top + 75);
       };
     })(this));
-    $('#goto_works').click((function(_this) {
+    document.getElementById('goto_works').addEventListener('click', (function(_this) {
       return function(e) {
         e.preventDefault();
         return _this._animate($('#third_page').offset().top - 25);
       };
     })(this));
-    $('#goto_os').click((function(_this) {
+    document.getElementById('goto_os').addEventListener('click', (function(_this) {
       return function(e) {
         e.preventDefault();
         return _this._animate($('#fourth_page').offset().top - 25);
       };
     })(this));
-    return $('#goto_contact').click((function(_this) {
+    return document.getElementById('goto_contact').addEventListener('click', (function(_this) {
       return function(e) {
         e.preventDefault();
         return _this._animate($('#last_page').offset().top);
