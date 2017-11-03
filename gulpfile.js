@@ -124,7 +124,3 @@ gulp.task('csslint', function(){
     .pipe(csslint())
     .pipe(csslint.formatter());
 });
-
-gulp.task('jekyll', shell.task([
-  'jekyll s'
-]));
