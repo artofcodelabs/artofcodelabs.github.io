@@ -11,6 +11,6 @@ class App.Views.LastPage extends App.Models.Base
     b = baffle '#contact_email', characters: '█▓▒░█▓▒░█▓▒░<>/', speed: 161
     b.start()
     setTimeout =>
-      $('#contact_email').attr 'href', "mailto:#{@contactEmail}"
+      document.getElementById('contact_email').setAttribute('href', "mailto:#{@contactEmail}")
       b.text( (text) => @contactEmail).reveal 1000
     , 1000

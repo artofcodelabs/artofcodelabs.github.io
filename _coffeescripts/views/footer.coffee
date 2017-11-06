@@ -4,4 +4,4 @@ class App.Views.Footer extends App.Models.Base
 
   render: ->
     year = new Date().getFullYear()
-    $('#current_year').text year
+    document.getElementById('current_year').textContent = year

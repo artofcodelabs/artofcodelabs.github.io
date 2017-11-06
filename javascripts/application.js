@@ -14163,7 +14163,7 @@ App.Views.Footer = (function(superClass) {
   Footer.prototype.render = function() {
     var year;
     year = new Date().getFullYear();
-    return $('#current_year').text(year);
+    return document.getElementById('current_year').textContent = year;
   };
 
   return Footer;
@@ -14199,7 +14199,7 @@ App.Views.LastPage = (function(superClass) {
     b.start();
     return setTimeout((function(_this) {
       return function() {
-        $('#contact_email').attr('href', "mailto:" + _this.contactEmail);
+        document.getElementById('contact_email').setAttribute('href', "mailto:" + _this.contactEmail);
         return b.text(function(text) {
           return _this.contactEmail;
         }).reveal(1000);
