@@ -30,7 +30,8 @@
   },
   "scripts": {
     "server": "jekyll s",
-    "start": "gulp"
+    "start": "gulp",
+    "build": "gulp production; jekyll b"
   },
   "author": "Zbigniew Humeniuk",
   "license": "UNLICENSED"
