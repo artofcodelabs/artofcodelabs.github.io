@@ -14214,48 +14214,6 @@ App.Views.LastPage = (function(superClass) {
 var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-App.Views.ThirdPage = (function(superClass) {
-  extend(ThirdPage, superClass);
-
-  function ThirdPage(opts) {
-    if (opts == null) {
-      opts = {};
-    }
-    ThirdPage.__super__.constructor.call(this, opts);
-  }
-
-  ThirdPage.prototype.render = function() {
-    this._renderSecretProject();
-    return this._handleLinks();
-  };
-
-  ThirdPage.prototype._renderSecretProject = function() {
-    var b;
-    b = baffle('#secret_project_name', {
-      characters: '▒░▓▒░▓▒░<>/',
-      speed: 161
-    });
-    return b.start();
-  };
-
-  ThirdPage.prototype._handleLinks = function() {
-    return $('a.goto_avatars').click(function(e) {
-      var top;
-      e.preventDefault();
-      top = Foundation.MediaQuery.atLeast('medium') ? $('#open_source_header').offset().top - 16 - 18 : $('#avatars_columns').offset().top - 16;
-      return $('html, body').animate({
-        scrollTop: top + "px"
-      }, 'normal');
-    });
-  };
-
-  return ThirdPage;
-
-})(App.Models.Base);
-
-var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
 App.Controllers.Main = (function(superClass) {
   extend(Main, superClass);
 
@@ -14265,7 +14223,6 @@ App.Controllers.Main = (function(superClass) {
 
   Main.prototype.index = function() {
     (new App.Views.FirstPage).render();
-    (new App.Views.ThirdPage).render();
     (new App.Views.LastPage).render();
     return (new App.Views.Footer).render();
   };
