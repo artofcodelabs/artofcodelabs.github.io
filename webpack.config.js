@@ -43,11 +43,26 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            {loader: 'css-loader'},
-            {loader: 'postcss-loader', options: postCssOptions},
-            {loader: 'sass-loader'}
+            { loader: 'css-loader' },
+            { loader: 'postcss-loader', options: postCssOptions },
+            { loader: 'sass-loader' }
           ]
         })
+      },
+      { test: /\.(png|svg|jpe?g|gif)$/i,
+        use: [
+          { loader: 'url-loader',
+            options: {
+              limit: 8192,
+              fallback: 'file-loader'
+            }
+          }
+        ]
+      },
+      { test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: [
+          { loader: 'file-loader' }
+        ]
       }
     ]
   },
