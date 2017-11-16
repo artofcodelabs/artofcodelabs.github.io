@@ -26,12 +26,14 @@
     "gulp-size": "~2.1.0",
     "gulp-uglify": "~2.0.0",
     "gulp-watch": "~4.3.9",
-    "pump": "~1.0.1"
+    "pump": "~1.0.1",
+    "webpack": "^3.8.1"
   },
   "scripts": {
     "server": "jekyll s",
-    "start": "gulp",
-    "build": "gulp production; jekyll b"
+    "start": "webpack --watch --config webpack.config.js",
+    "build": "gulp production; jekyll b",
+    "old_start": "gulp"
   },
   "author": "Zbigniew Humeniuk",
   "license": "UNLICENSED"
