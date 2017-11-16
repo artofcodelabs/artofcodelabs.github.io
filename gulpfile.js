@@ -2,13 +2,8 @@ console.log('Node version: ' + process.version);
 
 // Load plugins
 var gulp = require('gulp'),
-    del = require('del'),
     pump = require('pump'),
-    gutil = require('gulp-util'),
-    concat = require('gulp-concat'),
     notify = require('gulp-notify'),
-    coffee = require('gulp-coffee'),
-    watch = require('gulp-watch'),
     sass = require('gulp-sass'),
     size = require('gulp-size'),
     prefix = require('gulp-autoprefixer'),
