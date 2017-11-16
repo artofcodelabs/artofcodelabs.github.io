@@ -19,62 +19,15 @@ var gulp = require('gulp'),
     shell = require('gulp-shell'),
     uglify = require('gulp-uglify');
 
-// BEGIN Main tasks
-
-// Default task
-gulp.task('default', ['build'], function() {
-  gulp.start('watch');
-});
-
 // Production task
 gulp.task('production', function(){
   gulp.run('minify-images');
 });
 
-// END Main tasks
-
 // Build task
 gulp.task('build', function() {
   gulp.start('minify-js');
   gulp.start('minify-css');
-});
-
-// Watch
-gulp.task('watch', function() {
-  gulp.watch(['_coffeescripts/**/*.coffee'], {cwd: '.'}, ['minify-js']);
-  gulp.watch(['_sass/**/*.scss'], {cwd: '.'}, ['minify-css']);
-});
-
-// Clean
-gulp.task('clean', function() {
-  return del(['_javascripts/*']);
-});
-
-// Coffee
-gulp.task('coffee', ['clean'], function() {
-  return gulp.src('./_coffeescripts/**/*.coffee')
-    .pipe(coffee({bare: true}).on('error', gutil.log))
-    .pipe(gulp.dest('./_javascripts/'));
-});
-
-// Scripts
-gulp.task('scripts', ['coffee'], function() {
-  var manifest = [
-    './node_modules/jquery/dist/jquery.js',
-    './node_modules/foundation-sites/dist/plugins/foundation.core.js',
-    './node_modules/foundation-sites/dist/plugins/foundation.util.mediaQuery.js',
-    './node_modules/foundation-sites/dist/plugins/foundation.util.box.js',
-    './node_modules/foundation-sites/dist/plugins/foundation.util.triggers.js',
-    './node_modules/foundation-sites/dist/plugins/foundation.interchange.js',
-    './node_modules/loco-js/dist/loco.js',
-    './node_modules/baffle/dist/baffle.min.js',
-    './_javascripts/initializers/**/*.js',
-    './_javascripts/views/**/*.js',
-    './_javascripts/controllers/**/*.js'
-  ];
-  return gulp.src(manifest)
-    .pipe(concat('application.js'))
-    .pipe(gulp.dest('./javascripts/'));
 });
 
 gulp.task('minify-js', ['scripts'], function (cb) {
