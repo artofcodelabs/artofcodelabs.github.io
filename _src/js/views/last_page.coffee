@@ -1,3 +1,5 @@
+import baffle from 'baffle'
+
 class App.Views.LastPage extends App.Models.Base
   constructor: (opts = {}) ->
     super opts
