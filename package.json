@@ -11,6 +11,7 @@
     "loco-js": "~1.5.2"
   },
   "devDependencies": {
+    "clean-webpack-plugin": "^0.1.17",
     "del": "~2.2.2",
     "gulp": "~3.9.1",
     "gulp-autoprefixer": "~3.1.1",
