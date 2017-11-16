@@ -13,3 +13,5 @@ import './js/views/first_page.coffee';
 import './js/views/last_page.coffee';
 import './js/views/footer.coffee';
 import './js/controllers/main.coffee';
+
+import './css/application.scss';
