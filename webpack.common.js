@@ -32,6 +32,7 @@ module.exports = {
         use: [
           { loader: 'coffee-loader',
             options: {
+              sourceMap: true,
               transpile: {
                 presets: ['env']
               }

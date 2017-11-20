@@ -13,7 +13,7 @@ const styleLoaders = [
 ];
 
 const config = merge.smart(common, {
-  //devtool: 'source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       { test: /\.(sass|scss)$/,
