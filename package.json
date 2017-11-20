@@ -14,6 +14,7 @@
     "autoprefixer": "^7.1.6",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-minify-webpack-plugin": "^0.2.0",
     "babel-preset-env": "^1.6.1",
     "clean-webpack-plugin": "^0.1.17",
     "coffee-loader": "^0.9.0",
@@ -32,6 +33,7 @@
     "gulp-shell": "~0.5.2",
     "gulp-size": "~2.1.0",
     "gulp-uglify": "~2.0.0",
+    "image-webpack-loader": "^3.4.2",
     "postcss-flexbugs-fixes": "^3.2.0",
     "postcss-loader": "^2.0.8",
     "pump": "~1.0.1",
@@ -39,12 +41,14 @@
     "script-loader": "^0.7.2",
     "style-loader": "^0.19.0",
     "url-loader": "^0.6.2",
-    "webpack": "^3.8.1"
+    "webpack": "^3.8.1",
+    "webpack-merge": "^4.1.1"
   },
   "scripts": {
     "server": "jekyll s",
-    "start": "webpack --watch --config webpack.config.js",
-    "build": "gulp production; jekyll b",
+    "start": "webpack --watch --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js; jekyll b",
+    "old_build": "gulp production; jekyll b",
     "old_start": "gulp"
   },
   "author": "Zbigniew Humeniuk",
