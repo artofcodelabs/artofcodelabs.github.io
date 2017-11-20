@@ -4,6 +4,8 @@ var gulp = require('gulp'),
     size = require('gulp-size'),
     imagemin = require('gulp-imagemin');
 
+gulp.task('default', ['production']);
+
 gulp.task('production', function(){
   gulp.run('minify-images');
 });

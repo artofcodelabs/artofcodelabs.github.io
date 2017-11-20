@@ -1,6 +1,7 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const postCssOptions = {
   // Necessary for external CSS imports to work
@@ -75,7 +76,10 @@ module.exports = {
     }),
     new ExtractTextPlugin({
       filename: "[name].css"
-    })
+    }),
+    new CopyWebpackPlugin([{
+      from: '_src/images/'
+    }])
   ],
   output: {
     filename: '[name].js',

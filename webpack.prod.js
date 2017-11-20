@@ -2,6 +2,7 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const common = require('./webpack.common.js');
 
 const styleLoaders = [
@@ -55,7 +56,8 @@ const config = merge.smart(common, {
         'NODE_ENV': JSON.stringify('production'),
         'BABEL_ENV': JSON.stringify('production')
       }
-    })
+    }),
+    new ImageminPlugin({ test: /\.(jpe?g|png|gif|svg)$/i })
   ]
 });
 
