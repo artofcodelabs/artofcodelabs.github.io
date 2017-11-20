@@ -23,34 +23,24 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
     "gulp": "~3.9.1",
-    "gulp-autoprefixer": "~3.1.1",
-    "gulp-csslint": "~1.0.0",
     "gulp-imagemin": "~3.0.3",
-    "gulp-minify-css": "~1.2.4",
-    "gulp-notify": "^2.2.0",
-    "gulp-rename": "~1.2.2",
-    "gulp-sass": "~2.3.2",
-    "gulp-shell": "~0.5.2",
     "gulp-size": "~2.1.0",
-    "gulp-uglify": "~2.0.0",
     "image-webpack-loader": "^3.4.2",
+    "node-sass": "^4.7.1",
     "postcss-flexbugs-fixes": "^3.2.0",
     "postcss-loader": "^2.0.8",
-    "pump": "~1.0.1",
     "sass-loader": "^6.0.6",
     "script-loader": "^0.7.2",
     "style-loader": "^0.19.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.8.1",
-    "webpack-sources": "1.0.1",
-    "webpack-merge": "^4.1.1"
+    "webpack-merge": "^4.1.1",
+    "webpack-sources": "1.0.1"
   },
   "scripts": {
     "server": "jekyll s",
     "start": "webpack --watch --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js; jekyll b",
-    "old_build": "gulp production; jekyll b",
-    "old_start": "gulp"
+    "build": "gulp production; webpack --config webpack.prod.js; jekyll b"
   },
   "author": "Zbigniew Humeniuk",
   "license": "UNLICENSED"
