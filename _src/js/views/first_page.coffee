@@ -1,4 +1,6 @@
-class App.Views.FirstPage extends App.Models.Base
+import {Views} from 'loco-js'
+
+class FirstPage extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @windowHeight = window.innerHeight
@@ -56,3 +58,5 @@ class App.Views.FirstPage extends App.Models.Base
 
   _animate: (top) ->
     $('html, body').animate {scrollTop: "#{top}px"}, 'normal'
+
+export default FirstPage
