@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -24,6 +25,7 @@ const postCssOptions = {
 
 module.exports = {
   entry: {
+    vendor: ['baffle', 'loco-js'],
     application: './_src/app.js'
   },
   module: {
@@ -73,6 +75,11 @@ module.exports = {
       exclude: [],
       verbose: true,
       dry: false
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      // The order of this array matters
+      names: ["common", "vendor"],
+      minChunks: 2
     }),
     new ExtractTextPlugin({
       filename: "[name].css"
