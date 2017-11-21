@@ -2,8 +2,6 @@ import 'script-loader!jquery';
 import 'script-loader!foundation-sites/dist/plugins/foundation.core.js';
 import 'script-loader!foundation-sites/dist/plugins/foundation.util.mediaQuery.js';
 
-import './js/initializers/foundation';
-
 import {Controllers, Loco} from 'loco-js';
 import Main from './js/controllers/main';
 
@@ -20,4 +18,5 @@ const loco = new Loco({
   }
 });
 
+$(document).foundation();
 loco.init();
