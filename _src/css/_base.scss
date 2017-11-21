@@ -105,6 +105,17 @@ a {
 }
 
 /**
+ * Other
+ */
+
+hr{
+  height: 0;
+  border: none;
+  border-bottom: 1px dotted $concrete;
+  margin-bottom: rem-calc(38);
+}
+
+/**
  * Icons
  */
 
@@ -120,17 +131,6 @@ a {
       fill: $concrete;
     }
   }
-}
-
-/**
- * Other
- */
-
-hr{
-  height: 0;
-  border: none;
-  border-bottom: 1px dotted $concrete;
-  margin-bottom: rem-calc(38);
 }
 
 /**
