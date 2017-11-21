@@ -39,7 +39,7 @@
   "scripts": {
     "server": "jekyll s",
     "start": "webpack --watch --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js; jekyll b"
+    "build": "webpack -p --config webpack.prod.js; jekyll b"
   },
   "author": "Zbigniew Humeniuk",
   "license": "UNLICENSED"
