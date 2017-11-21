@@ -10,8 +10,10 @@ class FirstPage extends Views.Base{
     this._setHeights();
     this._handleLinks();
     this._renderMenu();
+    this._renderLogo();
     $(window).on('changed.zf.mediaquery', (event, newSize, oldSize) => {
       this._renderMenu();
+      this._renderLogo();
     });
   }
 
@@ -29,11 +31,23 @@ class FirstPage extends Views.Base{
   }
 
   _renderMenu(){
-    screen = Foundation.MediaQuery.current;
+    const screen = Foundation.MediaQuery.current;
     document.getElementById('goto_about').textContent = 'About';
     document.getElementById('goto_works').textContent = screen === 'small' ? 'Works' : 'Recent Works';
     document.getElementById('goto_os').textContent = screen === 'small' ? 'OS' : 'Open Source';
     document.getElementById('goto_contact').textContent = screen === 'small' ? 'Info' : 'Contact';
+  }
+
+  _renderLogo(){
+    const logoContainer = document.getElementById('logo-container');
+    switch(Foundation.MediaQuery.current){
+    case 'small':
+      logoContainer.style.paddingRight = '3%';
+    case 'medium':
+      logoContainer.style.paddingRight = '2.8%';
+    default:
+      logoContainer.style.paddingRight = '2.8%';
+    }
   }
 
   _handleLinks(){
