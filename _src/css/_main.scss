@@ -44,8 +44,13 @@ body[data-controller=Main]{
     background-color: $nephritis;
   }
 
-  #secret_project_icon{
-    position: relative;
+  #ekoskaner-logo-container{
+    padding-top: 26px;
+    padding-left: 10px;
+  }
+
+  #ekobilet-logo-container{
+    padding-top: 40px;
   }
 
   hr{
