@@ -1,6 +1,7 @@
 import baffle from 'baffle'
+import {Views} from 'loco-js'
 
-class App.Views.LastPage extends App.Models.Base
+class LastPage extends Views.Base
   constructor: (opts = {}) ->
     super opts
     at = '@'
@@ -16,3 +17,5 @@ class App.Views.LastPage extends App.Models.Base
       document.getElementById('contact_email').setAttribute('href', "mailto:#{@contactEmail}")
       b.text( (text) => @contactEmail).reveal 1000
     , 1000
+
+export default LastPage

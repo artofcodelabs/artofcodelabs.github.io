@@ -4,14 +4,23 @@ import 'script-loader!foundation-sites/dist/plugins/foundation.util.mediaQuery.j
 import 'script-loader!foundation-sites/dist/plugins/foundation.util.box.js';
 import 'script-loader!foundation-sites/dist/plugins/foundation.util.triggers.js';
 import 'script-loader!foundation-sites/dist/plugins/foundation.interchange.js';
-import 'script-loader!loco-js/dist/loco.js'
 
 import './js/initializers/foundation.coffee';
-import './js/initializers/loco.coffee';
 
-import './js/views/first_page.coffee';
-import './js/views/last_page.coffee';
-import './js/views/footer.coffee';
-import './js/controllers/main.coffee';
+import {Controllers, Loco} from 'loco-js';
+import Main from './js/controllers/main.coffee';
 
 import './css/application.scss';
+
+Object.assign(Controllers, {
+  Main
+});
+
+const loco = new Loco({
+  turbolinks: false,
+  notifications: {
+    enable: false
+  }
+});
+
+loco.init();
