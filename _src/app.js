@@ -7,7 +7,7 @@ import 'script-loader!foundation-sites/dist/plugins/foundation.util.triggers.js'
 import './js/initializers/foundation.coffee';
 
 import {Controllers, Loco} from 'loco-js';
-import Main from './js/controllers/main.coffee';
+import Main from './js/controllers/main';
 
 import './css/application.scss';
 
