@@ -7,6 +7,10 @@ body[data-controller=Main]{
 #first_page{
   background-color: #fff;
 
+  #logo-container{
+    padding-right:2.8%;
+  }
+
   #scroll_down_row{
     font-size: rem-calc(30);
   }

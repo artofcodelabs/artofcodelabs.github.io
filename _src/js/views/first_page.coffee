@@ -9,10 +9,8 @@ class FirstPage extends Views.Base
     this._setHeights()
     this._handleLinks()
     this._renderMenu()
-    this._renderLogo()
     $(window).on 'changed.zf.mediaquery', (event, newSize, oldSize) =>
       this._renderMenu()
-      this._renderLogo()
 
   _setHeights: ->
     thin = @windowHeight * 0.1
@@ -30,17 +28,6 @@ class FirstPage extends Views.Base
     document.getElementById('goto_works').textContent = if screen is 'small' then 'Works' else 'Recent Works'
     document.getElementById('goto_os').textContent = if screen is 'small' then 'OS' else 'Open Source'
     document.getElementById('goto_contact').textContent = if screen is 'small' then 'Info' else 'Contact'
-
-  _renderLogo: ->
-    maxWidth = switch Foundation.MediaQuery.current
-      when 'xxlarge' then '1170px'
-      when 'xlarge' then '1170px'
-      when 'large' then '994px'
-      when 'medium' then '610px'
-      when 'small' then '300px'
-      else null
-    if maxWidth?
-      document.getElementById('logo').style.maxWidth = maxWidth
 
   _handleLinks: ->
     document.getElementById('goto_about').addEventListener 'click', (e) =>
