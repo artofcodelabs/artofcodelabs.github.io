@@ -31,18 +31,6 @@ module.exports = {
   module: {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
-      { test: /\.coffee$/,
-        use: [
-          { loader: 'coffee-loader',
-            options: {
-              sourceMap: true,
-              transpile: {
-                presets: ['env']
-              }
-            }
-          }
-        ]
-      },
       { test: /\.(sass|scss)$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',

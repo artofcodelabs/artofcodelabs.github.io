@@ -37,19 +37,19 @@ class FirstPage extends Views.Base{
   }
 
   _handleLinks(){
-    document.getElementById('goto_about').addEventListener('click', (e) => {
+    document.getElementById('goto_about').addEventListener('click', e => {
       e.preventDefault();
       this._animate($('#second_page').offset().top + 75);
     });
-    document.getElementById('goto_works').addEventListener('click', (e) => {
+    document.getElementById('goto_works').addEventListener('click', e => {
       e.preventDefault();
       this._animate($('#third_page').offset().top - 25);
     });
-    document.getElementById('goto_os').addEventListener('click', (e) => {
+    document.getElementById('goto_os').addEventListener('click', e => {
       e.preventDefault();
       this._animate($('#fourth_page').offset().top - 25);
     });
-    document.getElementById('goto_contact').addEventListener('click', (e) => {
+    document.getElementById('goto_contact').addEventListener('click', e => {
       e.preventDefault();
       this._animate($('#last_page').offset().top);
     });
