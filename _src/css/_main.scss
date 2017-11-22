@@ -75,12 +75,21 @@ body[data-controller=Main]{
     padding-bottom: rem-calc(50 + 36 * 1.618);
   }
 
+  #loco-logo-container{
+    padding-top: 19px;
+    padding-left: 0;
+  }
+
   h2{
     margin-bottom: rem-calc(36 * 1.618 + 12);
   }
 
   .project{
-    background-color: $river-dark;
+    background-color: #fff;
+
+    &.trans{
+      background-color: transparent;
+    }
   }
 }
 
