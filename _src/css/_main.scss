@@ -57,6 +57,14 @@ body[data-controller=Main]{
     padding-top: 40px;
   }
 
+  #fu_pcrm-logo-container{
+    padding-top: 36px;
+  }
+
+  #fu_classic-logo-container svg{
+    margin-top: -4px;
+  }
+
   hr{
     border-bottom-color: $asbestos;
   }
@@ -148,7 +156,7 @@ img.team{
 
 span.tag{
   background-color: #98cea5;
-  padding: 2px 4px;
+  padding: 0 4px;
   border-radius: 4px;
   display: inline-block;
   margin-bottom: 10px;
