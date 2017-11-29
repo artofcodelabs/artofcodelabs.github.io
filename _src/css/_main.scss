@@ -7,6 +7,10 @@ body[data-controller=Main]{
 #first_page{
   background-color: #fff;
 
+  #logo-container{
+    padding-right:2.8%;
+  }
+
   #scroll_down_row{
     font-size: rem-calc(30);
   }
@@ -44,8 +48,21 @@ body[data-controller=Main]{
     background-color: $nephritis;
   }
 
-  #secret_project_icon{
-    position: relative;
+  #ekoskaner-logo-container{
+    padding-top: 26px;
+    padding-left: 10px;
+  }
+
+  #ekobilet-logo-container{
+    padding-top: 40px;
+  }
+
+  #fu_pcrm-logo-container{
+    padding-top: 36px;
+  }
+
+  #fu_classic-logo-container svg{
+    margin-top: -4px;
   }
 
   hr{
@@ -66,12 +83,21 @@ body[data-controller=Main]{
     padding-bottom: rem-calc(50 + 36 * 1.618);
   }
 
+  /*#loco-logo-container{
+    padding-top: 19px;
+    padding-left: 0;
+  }*/
+
   h2{
     margin-bottom: rem-calc(36 * 1.618 + 12);
   }
 
   .project{
-    background-color: $river-dark;
+    background-color: #fff;
+
+    &.trans{
+      background-color: transparent;
+    }
   }
 }
 
@@ -130,7 +156,7 @@ img.team{
 
 span.tag{
   background-color: #98cea5;
-  padding: 2px 4px;
+  padding: 0 4px;
   border-radius: 4px;
   display: inline-block;
   margin-bottom: 10px;
