@@ -1,15 +1,15 @@
 <svg width='142' viewBox="0 0 672 672" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="ekobilet" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g>
             <g>
                 <rect fill="#FFFFFF" x="0" y="0" width="672" height="672"></rect>
                 <g>
-                    <path d="M0,0 L672,0 L672,672 L0,672 L0,0 L0,0 Z M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537 L98.3414634,573.658537 L98.3414634,98.3414634 L98.3414634,98.3414634 Z" id="Combined-Shape" fill="#3d7f4d"></path>
-                    <path d="M0,0 L672,0 L672,672 M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537" id="Combined-Shape-Copy" fill="#6eb981"></path>
+                    <path d="M0,0 L672,0 L672,672 L0,672 L0,0 L0,0 Z M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537 L98.3414634,573.658537 L98.3414634,98.3414634 L98.3414634,98.3414634 Z" fill="#3d7f4d"></path>
+                    <path d="M0,0 L672,0 L672,672 M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537" fill="#6eb981"></path>
                 </g>
                 <g transform="translate(204.878049, 204.878049)">
-                    <rect id="Rectangle" fill="#6eb981" x="0" y="0" width="262.243902" height="262.243902"></rect>
-                    <polygon id="Rectangle-Copy" fill="#98cea5" points="0 0 262.243902 0 262.243902 262.243902"></polygon>
+                    <rect fill="#6eb981" x="0" y="0" width="262.243902" height="262.243902"></rect>
+                    <polygon fill="#98cea5" points="0 0 262.243902 0 262.243902 262.243902"></polygon>
                 </g>
             </g>
         </g>
