@@ -1,15 +1,17 @@
-<svg width='142' viewBox="0 0 672 672" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="142" viewBox="0 0 672 672" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g>
+        <g id="Artboard">
             <g>
-                <rect fill="#FFFFFF" x="0" y="0" width="672" height="672"></rect>
-                <g>
-                    <path d="M0,0 L672,0 L672,672 L0,672 L0,0 L0,0 Z M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537 L98.3414634,573.658537 L98.3414634,98.3414634 L98.3414634,98.3414634 Z" fill="#3d7f4d"></path>
-                    <path d="M0,0 L672,0 L672,672 M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537" fill="#6eb981"></path>
+                <rect id="Rectangle-2" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="672" height="672"></rect>
+                <g id="outside">
+                    <path d="M0,0 L672,0 L672,672 L0,672 L0,0 L0,0 Z M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537 L98.3414634,573.658537 L98.3414634,98.3414634 L98.3414634,98.3414634 Z" id="Combined-Shape" fill="#327243" fill-rule="nonzero"></path>
+                    <path d="M0,0 L672,0 L672,672 M98.3414634,98.3414634 L573.658537,98.3414634 L573.658537,573.658537" id="Combined-Shape-Copy" fill="#60AE75" fill-rule="nonzero"></path>
+                    <rect id="Bialy-blok" fill="#FFFFFF" x="97.2255319" y="97.2255319" width="477.548936" height="477.548936"></rect>
                 </g>
-                <g transform="translate(204.878049, 204.878049)">
-                    <rect fill="#6eb981" x="0" y="0" width="262.243902" height="262.243902"></rect>
-                    <polygon fill="#98cea5" points="0 0 262.243902 0 262.243902 262.243902"></polygon>
+                <g id="inside" transform="translate(204.878049, 204.878049)" fill-rule="nonzero">
+                    <rect id="Rectangle" fill="#60AE75" x="0" y="0" width="262.243902" height="262.243902"></rect>
+                    <polygon id="Rectangle-Copy" fill="#8AC69A" points="0 0 262.243902 0 262.243902 262.243902"></polygon>
                 </g>
             </g>
         </g>
