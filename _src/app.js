@@ -1,3 +1,5 @@
+import "core-js/fn/object/assign";
+
 import 'script-loader!jquery';
 import 'script-loader!foundation-sites/dist/plugins/foundation.core.js';
 import 'script-loader!foundation-sites/dist/plugins/foundation.util.mediaQuery.js';
