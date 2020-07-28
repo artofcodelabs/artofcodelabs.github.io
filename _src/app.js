@@ -14,6 +14,7 @@ Object.assign(Controllers, {
 });
 
 $(document).foundation();
-$(function(){
+
+document.addEventListener("DOMContentLoaded", function() {
   init(Controllers);
 });
