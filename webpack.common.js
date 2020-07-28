@@ -8,7 +8,7 @@ const postCssOptions = require("./postcss.config.js");
 
 module.exports = {
   entry: {
-    vendor: ['baffle', 'loco-js'],
+    vendor: ['baffle', 'loco-js-core'],
     application: './_src/app.js'
   },
   module: {
