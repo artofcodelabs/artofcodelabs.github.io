@@ -1,9 +1,7 @@
 import baffle from 'baffle';
-import {Views} from 'loco-js';
 
-class LastPage extends Views.Base{
-  constructor(opts = {}){
-    super(opts);
+class LastPage {
+  constructor() {
     const at = '@';
     this.contactEmail = 'hello' + at + 'artofcode' + '.' + 'co';
   }

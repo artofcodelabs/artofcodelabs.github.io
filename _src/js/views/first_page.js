@@ -1,8 +1,5 @@
-import {Views} from 'loco-js';
-
-class FirstPage extends Views.Base{
-  constructor(opts = {}){
-    super(opts);
+class FirstPage {
+  constructor() {
     this.windowHeight = window.innerHeight;
   }
 

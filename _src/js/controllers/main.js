@@ -1,9 +1,9 @@
-import {Controllers} from 'loco-js';
+import { Controllers } from 'loco-js-core';
 import FirstPage from '../views/first_page';
 import LastPage from '../views/last_page';
 import Footer from '../views/footer';
 
-class Main extends Controllers.Base{
+class Main extends Controllers.Base {
   index(){
     (new FirstPage).render();
     (new LastPage).render();
