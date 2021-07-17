@@ -24,7 +24,7 @@
     "file-loader": "^1.1.11",
     "image-webpack-loader": "^4.6.0",
     "imagemin-webpack-plugin": "^2.4.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "node-sass": "^4.14.1",
     "postcss-flexbugs-fixes": "^3.3.1",
     "postcss-loader": "^2.1.6",
