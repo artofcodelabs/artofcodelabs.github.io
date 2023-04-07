@@ -8,7 +8,7 @@
 
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
 
-  <link rel="stylesheet" href="{{ "/assets/application.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/old_assets/application.css" | prepend: site.baseurl }}">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 
   <link href="https://fonts.googleapis.com/css?family=Cutive&subset=latin-ext" rel="stylesheet">
@@ -19,6 +19,6 @@
   <link rel="apple-touch-icon" sizes="120x120" href="touch-icon-iphone-retina.png">
   <link rel="apple-touch-icon" sizes="152x152" href="touch-icon-ipad-retina.png">
 
-  <script src="{{ "/assets/vendor.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/assets/application.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/old_assets/vendor.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/old_assets/application.js" | prepend: site.baseurl }}"></script>
 </head>

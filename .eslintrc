@@ -1,0 +1,44 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+
+  "parser": "@babel/eslint-parser",
+
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+
+  "plugins": [
+    "prettier"
+  ],
+
+  "rules": {
+    "prettier/prettier": "error"
+  },
+
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": {
+          "resolve": {
+            "modules": [
+              "_src/js",
+              "_src/css",
+              "_src/images",
+              "node_modules"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

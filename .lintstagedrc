@@ -1,0 +1,14 @@
+{
+  "./*.js": [
+    "prettier --write",
+    "eslint"
+  ],
+  "_src/**/*.js": [
+    "prettier --write",
+    "eslint"
+  ],
+  "_src/css/**/*.css": [
+    "prettier --write",
+    "stylelint --fix"
+  ]
+}
