@@ -10,7 +10,8 @@
     "lint-staged": "lint-staged",
     "prepare": "husky install",
     "server": "jekyll s",
-    "stylelint": "stylelint _src/css --fix"
+    "stylelint": "stylelint _src/css --fix",
+    "test": "npm run eslint && npm run stylelint"
   },
   "author": "Zbigniew Humeniuk",
   "license": "UNLICENSED",

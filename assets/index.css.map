@@ -1,0 +1,1 @@
+{"version":3,"file":"index.css","mappings":"AAAA,MACE,SACF","sources":["webpack://aoc_co/./_src/css/index.css"],"sourcesContent":["#name {\n  color: red;\n}"],"names":[],"sourceRoot":""}
