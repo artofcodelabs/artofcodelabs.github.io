@@ -1,65 +1,80 @@
-const webpack = require('webpack');
-const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const postCssOptions = require("./postcss.config.js");
+const postcssOptions = require("./postcss.config.js");
 
 module.exports = {
+  resolve: {
+    modules: [
+      path.join(__dirname, "_src", "js"),
+      path.join(__dirname, "_src", "css"),
+      path.join(__dirname, "_src", "images"),
+      "node_modules",
+    ],
+  },
   entry: {
-    vendor: ['baffle', 'loco-js-core'],
-    application: './_src/app.js'
+    index: "./_src/index",
   },
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
-      { test: /\.(sass|scss)$/,
-        use: ExtractTextPlugin.extract({
-          use: [
-            { loader: 'css-loader' },
-            { loader: 'postcss-loader', options: postCssOptions },
-            { loader: 'sass-loader' }
-          ]
-        })
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+        },
       },
-      { test: /\.(png|svg|jpe?g|gif)$/i,
+      {
+        test: /\.css$/,
         use: [
-          { loader: 'url-loader',
-            options: {
-              limit: 8192,
-              fallback: 'file-loader'
-            }
-          }
-        ]
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: { postcssOptions: postcssOptions },
+          },
+        ],
       },
-      { test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-          { loader: 'file-loader' }
-        ]
-      }
-    ]
+      {
+        test: /\.(png|svg|jpe?g|gif)$/i,
+        type: "asset",
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: "asset",
+      },
+    ],
   },
   plugins: [
-    new CleanWebpackPlugin(['assets'], {
-      exclude: [],
-      verbose: true,
-      dry: false
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      // The order of this array matters
-      names: ["common", "vendor"],
-      minChunks: 2
+    new CopyPlugin({
+      patterns: [{ from: "_src/images/" }],
     }),
-    new ExtractTextPlugin({
-      filename: "[name].css"
-    }),
-    new CopyWebpackPlugin([{
-      from: '_src/images/'
-    }])
   ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          chunks: "initial",
+          name: "commons",
+          minChunks: 2,
+          minSize: 5000, // The default is too small to create commons chunks
+        },
+        vendor: {
+          test: /node_modules/,
+          chunks: "all",
+          name: "vendor",
+        },
+      },
+    },
+  },
   output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'assets')
-  }
+    path: path.resolve(__dirname, "assets"),
+    publicPath: "/assets/",
+  },
 };

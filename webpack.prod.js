@@ -1,64 +1,62 @@
+const { merge } = require("webpack-merge");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const common = require('./webpack.common.js');
+const common = require("./webpack.common.js");
 
-const styleLoaders = [
-  { loader: 'css-loader',
-    options: {
-      minimize: true
-    }
-  }
-];
-
-const config = merge.smart(common, {
-  devtool: 'source-map',
-  module: {
-    rules: [
-      { test: /\.(sass|scss)$/,
-        use: styleLoaders
-      },
-      {
-        test: /\.(png|svg|jpe?g|gif)$/i,
-        use: [
-          { loader: 'image-webpack-loader',
-            options: {
-              gifsicle: {
-                interlaced: false,
+module.exports = merge(common, {
+  mode: "production",
+  devtool: "source-map",
+  optimization: {
+    minimize: true,
+    minimizer: [
+      `...`,
+      new CssMinimizerPlugin(),
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.sharpMinify,
+          options: {
+            encodeOptions: {
+              jpeg: {
+                // https://sharp.pixelplumbing.com/api-output#jpeg
+                quality: 100,
               },
-              optipng: {
-                optimizationLevel: 7,
-              },
-              pngquant: {
-                quality: '65-90',
-                speed: 4
-              },
-              mozjpeg: {
-                progressive: true,
-                quality: 65
-              },
-              // Specifying webp here will create a WEBP version of your JPG/PNG images
               webp: {
-                quality: 75
-              }
-            }
-          }
-        ]
-      }
-    ]
-  },
-  plugins: [
-    new MinifyPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
-        'BABEL_ENV': JSON.stringify('production')
-      }
-    }),
-    new ImageminPlugin({ test: /\.(jpe?g|png|gif|svg)$/i })
-  ]
-});
+                // https://sharp.pixelplumbing.com/api-output#webp
+                lossless: true,
+              },
+              avif: {
+                // https://sharp.pixelplumbing.com/api-output#avif
+                lossless: true,
+              },
 
-module.exports = config;
+              // png by default sets the quality to 100%, which is same as lossless
+              // https://sharp.pixelplumbing.com/api-output#png
+              png: {},
+
+              // gif does not support lossless compression at all
+              // https://sharp.pixelplumbing.com/api-output#gif
+              gif: {},
+            },
+          },
+        },
+      }),
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.svgoMinify,
+          options: {
+            encodeOptions: {
+              // Pass over SVGs multiple times to ensure all optimizations are applied. False by default
+              multipass: true,
+              plugins: [
+                // set of built-in plugins enabled by default
+                // see: https://github.com/svg/svgo#default-preset
+                "preset-default",
+              ],
+            },
+          },
+        },
+      }),
+    ],
+  },
+});
