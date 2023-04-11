@@ -53,9 +53,7 @@ module.exports = {
       filename: "[name].css",
     }),
     new CopyPlugin({
-      patterns: [
-        { from: "_src/images/" },
-      ],
+      patterns: [{ from: "_src/images/" }],
     }),
   ],
   optimization: {
