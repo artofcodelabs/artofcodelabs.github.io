@@ -3,18 +3,21 @@
     <div class="columns">
       <div class="row align-spaced">
         <div class="columns small-11">
-          <h2 class='align-center'>Recent Works</h2>
+          <h2 class='align-center'>Some Works</h2>
         </div>
       </div>
 
       <div class="row align-center">
-        <div class="columns large-5 medium-6 small-11">
+        <div class="columns large-3 medium-5 small-11">
           <div class='circle project' id='fu_pcrm-logo-container'>
             {% include logos/fu_pcrm.svg %}
           </div>
           <p>
             <a href='https://followup.cc/followup-personal-crm' target="_blank" rel="noopener noreferrer" class='alt'>FollowUp Personal CRM</a>
           </p>
+        </div>
+
+        <div class="columns large-7 medium-7 small-11">
           <p class='align-left'>
             <span aria-hidden="true" class="icon icon_document_alt"></span>&nbsp;FollowUp Personal CRM is a simple, intelligent tool that makes managing relationships easy.
             The most important for users part of the system is a <a href='https://developer.chrome.com/extensions' target="_blank" rel="noopener noreferrer" class='alt'>Chrome's extension</a>, that works next to the Gmail window.<br>
@@ -36,16 +39,21 @@
             <span class='tag'>#loco</span>
             <span class='tag'>#google-api</span>
           </p>
-          <hr class='show-for-small-only'>
+          <hr>
         </div>
+      </div>
 
-        <div class="columns large-5 medium-6 small-11">
+      <div class="row align-center">
+        <div class="columns large-3 medium-5 small-11">
           <div class='circle project' id='fu_classic-logo-container'>
             {% include logos/fu_classic.svg %}
           </div>
           <p>
             <a href='https://followup.cc' target="_blank" rel="noopener noreferrer" class='alt'>FollowUp</a>
           </p>
+        </div>
+
+        <div class="columns large-7 medium-7 small-11">
           <p class='align-left'>
             <span aria-hidden="true" class="icon icon_document_alt"></span>&nbsp;FollowUp is a lightweight productivity suite that keeps your conversations and tasks from slipping through the cracks.<br>
             You can set perfectly timed reminders that arrive at the top of your inbox, right when you need them.<br>
@@ -61,55 +69,62 @@
             <span class='tag'>#haml</span>
             <span class='tag'>#google-api</span>
           </p>
-          <hr class='show-for-small-only'>
-        </div>
-      </div>
-
-      <div class="row align-center">
-        <div class="columns large-5 medium-6 small-11">
-          <div class='circle project' id='ekobilet-logo-container'>
-            {% include logos/ekobilet.svg %}
-          </div>
-          <p>
-            <a href='https://ekobilet.pl' target="_blank" rel="noopener noreferrer" class='alt'>Ekobilet</a>
-          </p>
-          <p class='align-left'>
-            <span aria-hidden="true" class="icon icon_document_alt"></span>&nbsp;Ekobilet (pol. bilet = ticket) is a ticket sales platform that is on the market since 2011.
-            It allows organizers to sell tickets online as e-ticket and in the paper form by using POS.
-          </p>
-          <p class='align-left'>
-            <span aria-hidden="true" class="icon icon_clock_alt"></span>&nbsp;Zbig developed and maintained the system between 2010 and 2017.
-          </p>
-          <p class='align-left'>
-            <span class='tag'>#ruby</span>
-            <span class='tag'>#rails</span>
-          </p>
-          <hr class='show-for-small-only'>
+          <hr>
         </div>
 
-        <div class="columns large-5 medium-6 small-11">
-          <div class='circle project' id='ekoskaner-logo-container'>
-            {% include logos/ekoskaner.svg %}
+        <div class="row align-center">
+          <div class="columns large-3 medium-5 small-11">
+            <div class='circle project' id='ekoskaner-logo-container'>
+              {% include logos/ekoskaner.svg %}
+            </div>
+            <p>
+              <a href='https://skaner.ekobilet.pl' target="_blank" rel="noopener noreferrer" class='alt'>EkoSkaner</a>
+            </p>
           </div>
-          <p>
-            <a href='https://skaner.ekobilet.pl' target="_blank" rel="noopener noreferrer" class='alt'>EkoSkaner</a>
-          </p>
-          <p class='align-left'>
-            <span aria-hidden="true" class="icon icon_document_alt"></span>&nbsp;EkoSkaner is a web app that is connected with Ekobilet via an API.
-            Its main functionality is to provide ticket validation. Tickets stay in sync with Ekobilet.
-            Organizers can also upload additional tickets from other sellers as CSV.<br>
-            EkoSkaner works with handheld barcode scanners in full offline mode (syncing tickets in browser's database + <a href='https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers' target="_blank" rel="noopener noreferrer" class='alt'>Service Workers</a>).<br>
-            Zbig is the only creator and maintainer of this app. From the beginning - it works on the <a href='https://github.com/locoframework' target="_blank" rel="noopener noreferrer" class='alt'>Loco</a> framework.
-          </p>
-          <p class='align-left'>
-            <span aria-hidden="true" class="icon icon_clock_alt"></span>&nbsp;EkoSkaner was created from scratch in the first 3 months of 2016.
-          </p>
-          <p class='align-left'>
-            <span class='tag'>#ruby</span>
-            <span class='tag'>#rails</span> <span class='tag'>#coffeescript</span>
-            <span class='tag'>#loco</span> <span class='tag'>#serviceworker</span>
-          </p>
-          <hr class='show-for-small-only'>
+
+          <div class="columns large-7 medium-6 small-11">
+            <p class='align-left'>
+              <span aria-hidden="true" class="icon icon_document_alt"></span>&nbsp;EkoSkaner is a web app that is connected with Ekobilet via an API.
+              Its main functionality is to provide ticket validation. Tickets stay in sync with Ekobilet.
+              Organizers can also upload additional tickets from other sellers as CSV.<br>
+              EkoSkaner works with handheld barcode scanners in full offline mode (syncing tickets in browser's database + <a href='https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers' target="_blank" rel="noopener noreferrer" class='alt'>Service Workers</a>).<br>
+              Zbig is the only creator and maintainer of this app. From the beginning - it works on the <a href='https://github.com/locoframework' target="_blank" rel="noopener noreferrer" class='alt'>Loco</a> framework.
+            </p>
+            <p class='align-left'>
+              <span aria-hidden="true" class="icon icon_clock_alt"></span>&nbsp;EkoSkaner was created from scratch in the first 3 months of 2016.
+            </p>
+            <p class='align-left'>
+              <span class='tag'>#ruby</span>
+              <span class='tag'>#rails</span> <span class='tag'>#coffeescript</span>
+              <span class='tag'>#loco</span> <span class='tag'>#serviceworker</span>
+            </p>
+            <hr>
+          </div>
+        </div>
+
+        <div class="row align-center">
+          <div class="columns large-3 medium-5 small-11">
+            <div class='circle project' id='ekobilet-logo-container'>
+              {% include logos/ekobilet.svg %}
+            </div>
+            <p>
+              <a href='https://ekobilet.pl' target="_blank" rel="noopener noreferrer" class='alt'>Ekobilet</a>
+            </p>
+          </div>
+
+          <div class="columns large-7 medium-6 small-11">
+            <p class='align-left'>
+              <span aria-hidden="true" class="icon icon_document_alt"></span>&nbsp;Ekobilet (pol. bilet = ticket) is a ticket sales platform that is on the market since 2011.
+              It allows organizers to sell tickets online as e-ticket and in the paper form by using POS.
+            </p>
+            <p class='align-left'>
+              <span aria-hidden="true" class="icon icon_clock_alt"></span>&nbsp;Zbig developed and maintained the system between 2010 and 2017.
+            </p>
+            <p class='align-left'>
+              <span class='tag'>#ruby</span>
+              <span class='tag'>#rails</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
